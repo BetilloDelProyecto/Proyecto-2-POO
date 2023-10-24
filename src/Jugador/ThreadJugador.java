@@ -23,7 +23,7 @@ public class ThreadJugador extends Thread{
                 switch(opcion)
                 {
                     case 1://mensaje enviado
-                        System.out.println("dawklmklmawdl");
+                        System.out.println("Opcion 1 ha llegado al ThreadJugador");
                         break;
                     default:
                         break;

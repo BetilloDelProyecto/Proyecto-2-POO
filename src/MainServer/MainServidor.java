@@ -1,16 +1,16 @@
 package MainServer;
 
+import Jugador.ThreadJugador;
 import MainServer.FrameServidorMain;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import proyecto2poo.JuegoServidor;
 
 public class MainServidor {
     ArrayList<JuegoServidor> servidores;
-    ArrayList<Socket> clientes;
+    ArrayList<Socket> jugadores;
+    ArrayList<ThreadMainServer>  threadsServer;
     int cont;
     ServerSocket servidorMain;
     FrameServidorMain ventana;
@@ -20,10 +20,10 @@ public class MainServidor {
     public MainServidor(FrameServidorMain ventana) {
         this.ventana = ventana;
         this.servidores = new ArrayList<>();
-        this.clientes = new ArrayList<>();
+        this.jugadores = new ArrayList<>();
+        this.threadsServer = new ArrayList<>();
         this.cont = 1025;
-        threadAceptarClientes = new ThreadAceptarClientes(this);
-        
+        this.threadAceptarClientes = new ThreadAceptarClientes(this);
     }
     
     //-------------------------------------------GETTER & SETTER----------------

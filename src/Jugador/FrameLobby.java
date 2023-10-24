@@ -130,7 +130,11 @@ public class FrameLobby extends javax.swing.JFrame {
     }//GEN-LAST:event_txfNickNameActionPerformed
 
     private void btnCrearLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearLobbyActionPerformed
-        // TODO add your handling code here:
+        try {
+            jugador.salida.writeInt(1);
+        } catch (IOException ex) {
+            System.out.println("Tu lo que ere es un niño rata");
+        }
     }//GEN-LAST:event_btnCrearLobbyActionPerformed
 
     public static void main(String args[]) {
@@ -155,8 +159,7 @@ public class FrameLobby extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(FrameLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new FrameLobby().setVisible(true);
