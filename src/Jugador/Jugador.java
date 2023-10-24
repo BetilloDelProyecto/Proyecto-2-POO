@@ -19,7 +19,7 @@ public class Jugador {
     public void conexion(int puerto) throws IOException{
         try {
             // se conecta con dos sockets al server, uno comunicacion otro msjes
-            cliente = new Socket("localhost", puerto);
+            cliente = new Socket(IP_SERVER, puerto);
             // inicializa las entradas-lectura y salidas-escritura
             entrada = new DataInputStream(cliente.getInputStream());
             salida = new DataOutputStream(cliente.getOutputStream());
@@ -42,6 +42,8 @@ public class Jugador {
         //imagenes de X o O, llamar a metodo marcar, colocar el nombre de enemigo
         // o el suyo propio
         //new threadCliente(entrada, ventanaCliente).start();
+        new ThreadJugador(entrada, salida, lobby).start();
+        
    }
     
     

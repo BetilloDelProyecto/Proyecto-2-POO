@@ -37,7 +37,7 @@ public class MainServidor {
     //-------------------------------------------METHODS----------------
     public void runServer(){
         try{
-            servidorMain = new ServerSocket(cont++);
+            servidorMain = new ServerSocket(1025);
             ventana.mostrar("Servidor Main Activo");
             threadAceptarClientes.start();
         }catch(IOException e){

@@ -4,6 +4,7 @@ import MainServer.MainServidor;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 
 public class FrameLobby extends javax.swing.JFrame {
     Jugador jugador;
@@ -12,7 +13,6 @@ public class FrameLobby extends javax.swing.JFrame {
             initComponents();
             //jugador = new Jugador(this);
             jugador = new Jugador(this);
-        
             jugador.conexion(1025);
         } catch (IOException ex){
             
@@ -51,7 +51,12 @@ public class FrameLobby extends javax.swing.JFrame {
 
         lblTamano.setText("Tamano:");
 
-        cbxTamanho.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+        cbxTamanho.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4" }));
+        cbxTamanho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxTamanhoActionPerformed(evt);
+            }
+        });
 
         btnCrearLobby.setText("Crear");
         btnCrearLobby.addActionListener(new java.awt.event.ActionListener() {
@@ -132,10 +137,15 @@ public class FrameLobby extends javax.swing.JFrame {
     private void btnCrearLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearLobbyActionPerformed
         try {
             jugador.salida.writeInt(1);
+            jugador.salida.writeUTF(txfNickName.getText());
         } catch (IOException ex) {
             System.out.println("Tu lo que ere es un niño rata");
         }
     }//GEN-LAST:event_btnCrearLobbyActionPerformed
+
+    private void cbxTamanhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTamanhoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxTamanhoActionPerformed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -165,6 +175,14 @@ public class FrameLobby extends javax.swing.JFrame {
                 new FrameLobby().setVisible(true);
             }
         });
+    }
+
+    public JLabel getLblNickName() {
+        return lblNickName;
+    }
+
+    public void setLblNickName(JLabel lblNickName) {
+        this.lblNickName = lblNickName;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

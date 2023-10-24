@@ -20,14 +20,17 @@ public class ThreadJugador extends Thread{
             try{
                 // esta leyendo siempre la instruccion, un int
                 opcion=entrada.readInt();
-                switch(opcion)
-                {
+                switch(opcion){
                     case 1://mensaje enviado
-                        System.out.println("Opcion 1 ha llegado al ThreadJugador");
+                        String name = entrada.readUTF();
+                        lobby.getLblNickName().setText(name);
+                        System.out.println(name);
+                        
+                        //System.out.println("Estoy en el Thread Jugador");
                         break;
                     default:
                         break;
-            }
+                }
          }
          catch (IOException e){
             System.out.println("Error en la comunicaci�n "+"Informaci�n para el usuario");

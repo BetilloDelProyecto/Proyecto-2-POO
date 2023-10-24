@@ -15,7 +15,7 @@ public class ThreadMainServer extends Thread{
     MainServidor servidor;// referencia al servidor
 
     // para envio de mensajes al enemigo
-    ArrayList <ThreadMainServer> enemigos = null;
+    //ArrayList <ThreadMainServer> enemigos = null;
     // identificar el numero de jugador
     //int numeroDeJugador;
 
@@ -46,7 +46,18 @@ public class ThreadMainServer extends Thread{
                 opcion = entrada.readInt();
                 switch (opcion) {
                     case 1:
+                        String nuevoSv = entrada.readUTF();
+                        //salida.writeInt(1);
+                        for (int i = 0; i < servidor.threadsServer.size(); i++) {
+                            servidor.threadsServer.get(i).salida.writeInt(1);
+                            servidor.threadsServer.get(i).salida.writeUTF(nuevoSv);
+                            //recien guardado
+                        }
                         System.out.println("Opcion 1 ha llegado al ThreadMainServer");
+                        
+                        //enemigos.get(0).salida.writeInt(1);
+                        //System.out.println(servidor.jugadores.size());
+                        //System.out.println("Estoy en el Thread Main Server");
                         break;
                     default:
                         System.out.println("Default del ThreadMainServer");
