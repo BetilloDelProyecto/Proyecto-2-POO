@@ -21,8 +21,8 @@ public class ThreadAceptarClientes extends Thread{
                 try {
                     servidor.jugadores.add( servidor.servidorMain.accept());
                     servidor.ventana.mostrar("Cliente se ha conectado");
-                    servidor.threadsServer.add(new ThreadMainServer(servidor.jugadores.get(servidor.jugadores.size()-1), servidor));
-                    servidor.threadsServer.get(servidor.threadsServer.size()-1).start();
+                    servidor.threadsMainServer.add(new ThreadMainServer(servidor.jugadores.get(servidor.jugadores.size()-1), servidor));
+                    servidor.threadsMainServer.get(servidor.threadsMainServer.size()-1).start();
                 } catch (IOException ex) {
                     
                 }

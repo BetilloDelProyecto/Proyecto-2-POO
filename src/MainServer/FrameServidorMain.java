@@ -51,8 +51,7 @@ public class FrameServidorMain extends javax.swing.JFrame {
         
     }
     
-    public void mostrar (String texto)
-    {
+    public void mostrar (String texto){
         txaMensajesServidor.append(texto+"\n");
     }
 

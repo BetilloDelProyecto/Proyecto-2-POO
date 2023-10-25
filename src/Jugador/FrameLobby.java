@@ -4,10 +4,13 @@ import MainServer.MainServidor;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
+import javax.swing.*;
+
 
 public class FrameLobby extends javax.swing.JFrame {
     Jugador jugador;
+    
+    //--------------------------------------CONSTRUCTOR
     public FrameLobby() {
         try {
             initComponents();
@@ -17,8 +20,20 @@ public class FrameLobby extends javax.swing.JFrame {
         } catch (IOException ex){
             
         }
-        
     }
+    
+    public void refreshDefensesListBox(String text){
+        limpiarDefensesListBox();
+        DefaultListModel modelo = (DefaultListModel) lstServidores.getModel();
+        modelo.addElement(text);
+    }
+
+    public void limpiarDefensesListBox(){
+        DefaultListModel modelo = new DefaultListModel();
+        lstServidores.setModel(modelo); 
+    }
+    
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -136,10 +151,14 @@ public class FrameLobby extends javax.swing.JFrame {
 
     private void btnCrearLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearLobbyActionPerformed
         try {
+            jugador.setHost(true);
+            jugador.setNomCliente(txfNickName.getText());
             jugador.salida.writeInt(1);
             jugador.salida.writeUTF(txfNickName.getText());
+            // SE GUARDOOOOOOOOOO
+            
         } catch (IOException ex) {
-            System.out.println("Tu lo que ere es un niño rata");
+            System.out.println("No se pudo mandar la informacion");
         }
     }//GEN-LAST:event_btnCrearLobbyActionPerformed
 
