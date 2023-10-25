@@ -1,11 +1,11 @@
 package MainServer;
 
-import Jugador.ThreadJugador;
-import MainServer.FrameServidorMain;
-import java.io.IOException;
+import Jugador.*;
+import MainServer.*;
+import java.io.*;
 import java.net.*;
 import java.util.*;
-import proyecto2poo.JuegoServidor;
+import proyecto2poo.*;
 
 public class MainServidor {
     ArrayList<JuegoServidor> servidores;
