@@ -1,17 +1,17 @@
 package MainServer;
 
-import JuegoServidor.FrameWaitingPlayers;
 import Jugador.*;
 import MainServer.*;
+import Partida.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class MainServidor {
-    ArrayList<FrameWaitingPlayers> servidores;
+public class MainServidor{
     ArrayList<Socket> jugadores;
     ArrayList<ThreadMainServer>  threadsMainServer;
     ArrayList<String> nombres;
+    ArrayList<Partida> partidas;
     int cont;
     
     //ATRIBUTOS PROPIOS//
@@ -22,26 +22,25 @@ public class MainServidor {
     //-------------------------------------------CONSTRUCTOR----------------
     public MainServidor(FrameServidorMain ventana) {
         this.ventana = ventana;
-        this.servidores = new ArrayList<>();
         this.jugadores = new ArrayList<>();
         this.threadsMainServer = new ArrayList<>();
         this.nombres = new ArrayList<>();
-        this.cont = 1025;
+        
         this.threadAceptarClientes = new ThreadAceptarClientes(this);
+        this.partidas = new ArrayList<>();
     }
     
     //-------------------------------------------GETTER & SETTER----------------
-    public ArrayList<FrameWaitingPlayers> getServidores() {
-        return servidores;
+
+    public ArrayList<Partida> getPartidas() {
+        return partidas;
     }
-    
-    //-------------------------------------------GETTER & SETTER----------------
-    
+  
     
     //-------------------------------------------METHODS----------------
     public void runServer(){
         try{
-            servidorMain = new ServerSocket(cont++);
+            servidorMain = new ServerSocket(1025);
             ventana.mostrar("Servidor Main Activo");
             threadAceptarClientes.start();
         }catch(IOException e){

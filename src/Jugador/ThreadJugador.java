@@ -3,17 +3,22 @@ package Jugador;
 import java.io.*;
 import javax.swing.JOptionPane;
 
-public class ThreadJugador extends Thread{
+public class ThreadJugador extends Thread implements Serializable{
     //solo de lectura
-    DataInputStream entrada;
-    DataOutputStream salida;
+    transient DataInputStream entrada;
+    transient DataOutputStream salida;
+    transient ObjectOutputStream salidaO=null;//Para enviar comunicacion
+    transient ObjectInputStream entradaO=null;//Para leer comunicacion
+    
     FrameLobby lobby; //referencia acliente
-    public ThreadJugador (DataInputStream entrada,DataOutputStream salida,FrameLobby lobby) throws IOException{
+    public ThreadJugador (DataInputStream entrada,DataOutputStream salida,FrameLobby lobby, ObjectOutputStream salidaO, ObjectInputStream entradaO) throws IOException{
         this.entrada = entrada;
         this.salida = salida;
+        this.salidaO = salidaO;
+        this.entradaO = entradaO;
+        
         this.lobby = lobby;
     }
-    
     public void run(){
         int opcion=0;
         // solamente lee lo que el servidor threadServidor le envia
@@ -26,20 +31,11 @@ public class ThreadJugador extends Thread{
                         String name = entrada.readUTF();
                         lobby.refreshDefensesListBox(name);
                         //System.out.println(name);
-                        
                         //System.out.println("Estoy en el Thread Jugador");
                         break;
                     case 20:
-                        lobby.revalidate();
-                        lobby.repaint();
                         lobby.setVisible(true);
-                        
                         JOptionPane.showMessageDialog(lobby,"Error, existe nombre","Error",JOptionPane.ERROR_MESSAGE);
-                        break;
-                    case 21:
-                        lobby.revalidate();
-                        lobby.repaint();
-                        lobby.setVisible(false);
                         break;
                     default:
                         break;

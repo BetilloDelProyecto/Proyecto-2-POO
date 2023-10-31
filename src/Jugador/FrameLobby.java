@@ -1,20 +1,21 @@
 package Jugador;
 
 import MainServer.MainServidor;
+import Partida.PartidaGUI;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
-
-public class FrameLobby extends javax.swing.JFrame {
+public class FrameLobby extends javax.swing.JFrame implements Serializable{
     Jugador jugador;
     
     //--------------------------------------CONSTRUCTOR
     public FrameLobby() {
         try {
             initComponents();
-            //jugador = new Jugador(this);
+            setLayout(null);
             jugador = new Jugador(this);
             jugador.conexion(1025);
         } catch (IOException ex){
@@ -33,8 +34,6 @@ public class FrameLobby extends javax.swing.JFrame {
         lstServidores.setModel(modelo); 
     }
     
-    
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -151,11 +150,20 @@ public class FrameLobby extends javax.swing.JFrame {
 
     private void btnCrearLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearLobbyActionPerformed
         try {
-            jugador.setHost(true);
+            this.setVisible(false);
             jugador.setNomCliente(txfNickName.getText());
             jugador.salida.writeInt(1);
             jugador.salida.writeUTF(txfNickName.getText());
-            // SE GUARDOOOOOOOOOO
+            jugador.setVentanaPartida(new PartidaGUI());
+            jugador.getVentanaPartida().setVisible(true);
+            jugador.getVentanaPartida().getLblEnemigo1().setText(jugador.getNomCliente());
+            
+            try {
+                jugador.salidaO.writeObject(jugador);
+            } catch (IOException e) {
+                System.out.println(e);
+                System.out.println("Licho Aguevado");
+            }
             
         } catch (IOException ex) {
             System.out.println("No se pudo mandar la informacion");
