@@ -56,8 +56,34 @@ public class Jugador implements Serializable {
         return fichas;
     }
 
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public void setPartida(Partida partida) {
+        this.partida = partida;
+    }
+    
+    
     public void setHost(boolean host) {
         this.host = host;
+    }
+    
+    public void refrescaNombresPartida(){
+        int cont = 0;
+        for (int i = 0; i < getPartida().getJugadores().size(); i++) {
+           
+            Jugador j = getPartida().getJugadores().get(i);
+            if (cont==0 && j != this) {
+                getVentanaPartida().getLblEnemigo1().setText(j.getNomCliente());
+                cont++;
+            }else if (cont==1 && j != this){
+                getVentanaPartida().getLblEnemigo2().setText(j.getNomCliente());
+                cont++;
+            }else if (cont==2 && j != this)
+                getVentanaPartida().getLblEnemigo2().setText(j.getNomCliente());
+            
+        }
     }
     
     public void conexion(int puerto) throws IOException{
@@ -65,15 +91,15 @@ public class Jugador implements Serializable {
             cliente = new Socket(IP_SERVER, puerto);
             entrada = new DataInputStream(cliente.getInputStream());
             salida = new DataOutputStream(cliente.getOutputStream());
-            System.out.println("Licho");
+            
             try{
                 salidaO = new ObjectOutputStream(cliente.getOutputStream());//comunic
                 entradaO = new ObjectInputStream(cliente.getInputStream());//comunic
                 
             }  catch (IOException e) {
-                System.out.println("Licho 2");
+                System.out.println("No sirven los ObjectInputStream en Clase Jugador");
             }
-            System.out.println("Licho 3");
+           
         } catch (IOException e) {
             System.out.println("\tEl servidor no esta levantado");
             System.out.println("\t=============================");

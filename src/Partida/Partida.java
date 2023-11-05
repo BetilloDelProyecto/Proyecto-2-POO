@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Partida implements Serializable {
-    ArrayList<Ficha> mesa;
-    ArrayList<Ficha> bote;
+    transient ArrayList<Ficha> mesa;
+    transient ArrayList<Ficha> bote;
     Jugador host;
-    ArrayList<ThreadJugador> threadsJugadores;
-    ArrayList<Jugador> jugadores;
-    Random rand = new Random();
+    transient ArrayList<ThreadJugador> threadsJugadores;
+    transient ArrayList<Jugador> jugadores;
+    transient Random rand = new Random();
     
     public Partida(Jugador host) {
         this.host = host;
@@ -59,5 +59,15 @@ public class Partida implements Serializable {
             
         }
     }
+
+    public Jugador getHost() {
+        return host;
+    }
+
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
+    }
+    
+    
     
 }

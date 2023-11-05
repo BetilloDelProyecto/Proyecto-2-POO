@@ -25,7 +25,6 @@ public class MainServidor{
         this.jugadores = new ArrayList<>();
         this.threadsMainServer = new ArrayList<>();
         this.nombres = new ArrayList<>();
-        
         this.threadAceptarClientes = new ThreadAceptarClientes(this);
         this.partidas = new ArrayList<>();
     }

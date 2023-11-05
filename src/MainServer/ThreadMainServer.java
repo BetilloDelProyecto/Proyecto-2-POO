@@ -39,21 +39,52 @@ public class ThreadMainServer extends Thread{
             try {
                 opcion = entrada.readInt();
                 switch (opcion) {
-                    case 1:
+                    case 1://crea una lobby nueva
                         String nuevoSv = entrada.readUTF();
                         if(!servidor.existeNombre(nuevoSv)){
-                            servidor.nombres.add(nuevoSv);
-                            Jugador j = (Jugador) entradaO.readObject();
-                            System.out.println("ESTE ES EL SOUT BUSCADO, NOMBRE: " + j.getNomCliente());
-                            Partida nueva = new Partida(j);
-                            servidor.getPartidas().add(nueva);
+                            if(!"".equals(nuevoSv)){
+                                servidor.nombres.add(nuevoSv);
+                                Jugador j = (Jugador) entradaO.readObject();
+                                Partida nueva = new Partida(j);
+                                j.setPartida(nueva);
+                                servidor.getPartidas().add(nueva);
+                                
+                            }
                             for (int i = 0; i < servidor.threadsMainServer.size(); i++) {
                                 servidor.threadsMainServer.get(i).salida.writeInt(1);
-                                servidor.threadsMainServer.get(i).salida.writeUTF(nuevoSv);
+                                servidor.threadsMainServer.get(i).salida.writeInt(servidor.getPartidas().size());
+                                //salida.writeUTF("Paquito");
+                                for (int j = 0; j < servidor.getPartidas().size(); j++) {
+                                    System.out.println("Entro al for del threadMainServer");
+                                    Partida get = servidor.getPartidas().get(j);
+                                    servidor.threadsMainServer.get(i).salida.writeUTF(get.getHost().getNomCliente());
+                                }
                             }
                         }else{
                             salida.writeInt(20);
                             System.out.println("Si existe el nombre");                              
+                        }
+                        break;
+                    case 2://se une a una lobby
+                        nuevoSv = entrada.readUTF();
+                        String svBuscado = entrada.readUTF();
+                        if(!servidor.existeNombre(nuevoSv)){
+                            if (partidaBuscada(svBuscado)!=null){
+                                Jugador nuevo = (Jugador) entradaO.readObject();
+                                partidaBuscada(svBuscado).getJugadores().add(nuevo);
+                                nuevo.setPartida(partidaBuscada(svBuscado));
+                            }
+                        }else{
+                            salida.writeInt(20);
+                            System.out.println("Si existe el nombre");                              
+                        }
+                        break;
+                    case 3://agrega los nombres de los rivales en la interfaz de cada jugador en la sala
+                        svBuscado = entrada.readUTF();
+                        for (int i = 0; i < partidaBuscada(svBuscado).getJugadores().size(); i++) {
+                            Jugador get = partidaBuscada(svBuscado).getJugadores().get(i);
+                            System.out.println("Nombre del jugador por modificar ventana: " + get.getNomCliente());
+                            get.refrescaNombresPartida();
                         }
                         break;
                     default:
@@ -69,6 +100,13 @@ public class ThreadMainServer extends Thread{
         }
     }
     
-    
+    public Partida partidaBuscada(String nombreHost){
+        for (int i = 0; i < servidor.getPartidas().size(); i++) {
+            if(servidor.getPartidas().get(i).getHost().getNomCliente().equals(nombreHost)){
+                return servidor.getPartidas().get(i);
+            }
+        }
+        return null;
+    }
     
 }
