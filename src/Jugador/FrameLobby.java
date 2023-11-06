@@ -1,9 +1,6 @@
 package Jugador;
 
-import MainServer.MainServidor;
-import Partida.Partida;
 import Partida.PartidaGUI;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -23,9 +20,8 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
             jugador.conexion(1025);
             jugador.salida.writeInt(1);
             jugador.salida.writeUTF("");
+            
             lstServidores.addMouseListener(new MouseAdapter() {
-                
-               
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -34,15 +30,11 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
                     if (selectedIndex >= 0) {
                         DefaultListModel<String> model = (DefaultListModel<String>) list.getModel();
                         String svSelected = model.getElementAt(selectedIndex);
-                        
                         System.out.println("Doble clic en: " + svSelected);
                     }
                 }
             }
-            
             });
-            
-            
             
         } catch (IOException ex){
             
@@ -195,9 +187,11 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
             jugador.salida.writeUTF(txfNickName.getText());
             jugador.setVentanaPartida(new PartidaGUI());
             jugador.getVentanaPartida().setVisible(true);
+            jugador.getVentanaPartida().setJugador(jugador);
             jugador.getVentanaPartida().getLblEnemigo1().setText(jugador.getNomCliente());
-            jugador.salidaO.writeObject(jugador);
-            
+            jugador.salida.writeUTF(txfNickName.getText());
+            jugador.getVentanaPartida().getBtnSalirPartida().setText("Cerrar Lobby");
+            jugador.setHostPartida(jugador.getNomCliente());
             
         } catch (IOException ex) {
             System.out.println("No se pudo crear la lobby");
@@ -216,13 +210,12 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
                 jugador.salida.writeInt(2);
                 jugador.salida.writeUTF(txfNickName.getText());
                 jugador.salida.writeUTF(lstServidores.getSelectedValue());
-                jugador.salidaO.writeObject(jugador);
-                
                 jugador.setVentanaPartida(new PartidaGUI());
                 jugador.getVentanaPartida().setVisible(true);
+                jugador.getVentanaPartida().getBtnIniciarPartida().setVisible(false);
+                jugador.getVentanaPartida().setJugador(jugador);
                 
-                jugador.salida.writeInt(3);
-                jugador.salida.writeUTF(lstServidores.getSelectedValue());
+                
             } catch (IOException ex) {
                 System.out.println("No se pudo unir a la lobby");
             }
@@ -254,7 +247,6 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new FrameLobby().setVisible(true);
-                 
             }
         });
     }

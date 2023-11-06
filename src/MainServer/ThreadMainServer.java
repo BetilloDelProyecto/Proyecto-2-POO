@@ -5,10 +5,6 @@ import Jugador.Jugador;
 import Partida.*;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 public class ThreadMainServer extends Thread{
     transient Socket jugador = null;//referencia a socket de comunicacion de cliente
@@ -24,6 +20,7 @@ public class ThreadMainServer extends Thread{
         this.jugador = jugador;
         this.servidor = serv;
     }
+    
     public void run(){
         try{
             entrada = new DataInputStream(jugador.getInputStream());//comunic
@@ -44,9 +41,8 @@ public class ThreadMainServer extends Thread{
                         if(!servidor.existeNombre(nuevoSv)){
                             if(!"".equals(nuevoSv)){
                                 servidor.nombres.add(nuevoSv);
-                                Jugador j = (Jugador) entradaO.readObject();
-                                Partida nueva = new Partida(j);
-                                j.setPartida(nueva);
+                                String host = entrada.readUTF();
+                                Partida nueva = new Partida(host,this);
                                 servidor.getPartidas().add(nueva);
                                 
                             }
@@ -54,15 +50,14 @@ public class ThreadMainServer extends Thread{
                                 servidor.threadsMainServer.get(i).salida.writeInt(1);
                                 servidor.threadsMainServer.get(i).salida.writeInt(servidor.getPartidas().size());
                                 //salida.writeUTF("Paquito");
-                                for (int j = 0; j < servidor.getPartidas().size(); j++) {
-                                    System.out.println("Entro al for del threadMainServer");
+                                for (int j = 0; j < servidor.getPartidas().size(); j++){
                                     Partida get = servidor.getPartidas().get(j);
-                                    servidor.threadsMainServer.get(i).salida.writeUTF(get.getHost().getNomCliente());
+                                    servidor.threadsMainServer.get(i).salida.writeUTF(get.getHost());
                                 }
                             }
                         }else{
                             salida.writeInt(20);
-                            System.out.println("Si existe el nombre");                              
+                            System.out.println("Nickname en uso, inténtalo con otro.");                               
                         }
                         break;
                     case 2://se une a una lobby
@@ -70,22 +65,44 @@ public class ThreadMainServer extends Thread{
                         String svBuscado = entrada.readUTF();
                         if(!servidor.existeNombre(nuevoSv)){
                             if (partidaBuscada(svBuscado)!=null){
-                                Jugador nuevo = (Jugador) entradaO.readObject();
-                                partidaBuscada(svBuscado).getJugadores().add(nuevo);
-                                nuevo.setPartida(partidaBuscada(svBuscado));
+                                partidaBuscada(svBuscado).getThreadsInLobby().add(this);
+                                salida.writeInt(2);
+                                salida.writeUTF(svBuscado);
                             }
+                            else{
+                                System.out.println("No se encontró la partida. Case 2 threadMainSv");
+                                salida.writeInt(2);
+                                salida.writeUTF("");
+                            }
+                            
+                            System.out.println("Tamanho de los threads en la partida buscada: " + partidaBuscada(svBuscado).getThreadsInLobby().size());
                         }else{
                             salida.writeInt(20);
-                            System.out.println("Si existe el nombre");                              
+                            System.out.println("Nickname en uso, inténtalo con otro.");                              
                         }
+                        //se deben refrescar los nombres de los miembros de la partida
+                        
                         break;
-                    case 3://agrega los nombres de los rivales en la interfaz de cada jugador en la sala
+
+                    case 3://se inicia la partida por el host
+                        
                         svBuscado = entrada.readUTF();
-                        for (int i = 0; i < partidaBuscada(svBuscado).getJugadores().size(); i++) {
-                            Jugador get = partidaBuscada(svBuscado).getJugadores().get(i);
-                            System.out.println("Nombre del jugador por modificar ventana: " + get.getNomCliente());
-                            get.refrescaNombresPartida();
+                        Partida partidaBuscada = partidaBuscada(svBuscado);
+                        if (partidaBuscada != null) {
+                            for (int i = 0; i < partidaBuscada.getThreadsInLobby().size(); i++) {
+                                ThreadMainServer get = partidaBuscada.getThreadsInLobby().get(i);
+                                get.salida.writeInt(3);
+                                get.salidaO.writeObject(partidaBuscada.repartirFichas());
+                            }
+                        }else{
+                            System.out.println("Partida no encontrada, error en el servidor.");
+                            
                         }
+                        //Se reparten fichas
+                        
+                        //se asignan turnos
+                        
+                      
                         break;
                     default:
                         System.out.println("Default del ThreadMainServer");
@@ -93,16 +110,13 @@ public class ThreadMainServer extends Thread{
             } catch (IOException ex) {
                 System.out.println("THREAD CLIENTE SE HA DETENIDO");
                 this.isRunning = false;
-            } catch (ClassNotFoundException ex) {
-                System.out.println("Clase Jugador no encontrada");
             }
-            
         }
     }
     
     public Partida partidaBuscada(String nombreHost){
         for (int i = 0; i < servidor.getPartidas().size(); i++) {
-            if(servidor.getPartidas().get(i).getHost().getNomCliente().equals(nombreHost)){
+            if(servidor.getPartidas().get(i).getHost().equals(nombreHost)){
                 return servidor.getPartidas().get(i);
             }
         }

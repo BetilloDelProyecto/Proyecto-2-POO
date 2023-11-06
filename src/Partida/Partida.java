@@ -2,25 +2,25 @@
 package Partida;
 
 import Jugador.*;
+import MainServer.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Partida implements Serializable {
-    transient ArrayList<Ficha> mesa;
-    transient ArrayList<Ficha> bote;
-    Jugador host;
-    transient ArrayList<ThreadJugador> threadsJugadores;
-    transient ArrayList<Jugador> jugadores;
-    transient Random rand = new Random();
+    ArrayList<Ficha> mesa;
+    ArrayList<Ficha> bote;
+    String host;
+    ArrayList<ThreadMainServer> threadsInLobby;
+    //ArrayList<Jugador> jugadores;
+    Random rand = new Random();
     
-    public Partida(Jugador host) {
+    public Partida(String host, ThreadMainServer threadHost) {
         this.host = host;
         this.bote = new ArrayList<>();
         this.mesa = new ArrayList<>();
-        this.jugadores = new ArrayList<>();
-        this.jugadores.add(host);
-        this.threadsJugadores = new ArrayList<>();
+        this.threadsInLobby = new ArrayList<>();
+        threadsInLobby.add(threadHost);
         generarFichas(true);
         generarFichas(false);
     }
@@ -37,35 +37,22 @@ public class Partida implements Serializable {
         }
     }
     
-    public void imprimirFichasPorJugador(){
-        System.out.println("Fichas: \n");
-        for (int i = 0; i < jugadores.size(); i++) {
-            Jugador get = jugadores.get(i);
-            System.out.println("Mano del jugador: " + i);
-            for (int j = 0; j < get.getFichas().size(); j++) {
-                Ficha ficha = get.getFichas().get(j);
-                System.out.println(ficha);
-            }
+   
+    public ArrayList<Ficha> repartirFichas(){
+        ArrayList <Ficha> mano = new ArrayList<>();
+        for (int j = 0; j < 14; j++){
+            int randomNumber = rand.nextInt(bote.size());
+            mano.add(bote.remove(randomNumber));
         }
-    }
-    
-    public void repartirFichas(){
-        for (int i = 0; i < jugadores.size(); i++) {
-            Jugador get = jugadores.get(i);
-            for (int j = 0; j < 14; j++) {
-                int randomNumber = rand.nextInt(bote.size());
-                get.getFichas().add(bote.remove(randomNumber));
-            }
-            
-        }
+        return mano;
     }
 
-    public Jugador getHost() {
+    public String getHost() {
         return host;
     }
 
-    public ArrayList<Jugador> getJugadores() {
-        return jugadores;
+    public ArrayList<ThreadMainServer> getThreadsInLobby() {
+        return threadsInLobby;
     }
     
     

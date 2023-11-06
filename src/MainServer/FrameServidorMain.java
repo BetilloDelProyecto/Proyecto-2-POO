@@ -1,8 +1,5 @@
 
-
 package MainServer;
-
-import java.io.Serializable;
 
 public class FrameServidorMain extends javax.swing.JFrame{
     MainServidor servidor;
@@ -50,7 +47,6 @@ public class FrameServidorMain extends javax.swing.JFrame{
     public static void main(String args[]) {
         FrameServidorMain serv =new FrameServidorMain();
         serv.setVisible(true);
-        
     }
     public void mostrar (String texto){
         txaMensajesServidor.append(texto+"\n");

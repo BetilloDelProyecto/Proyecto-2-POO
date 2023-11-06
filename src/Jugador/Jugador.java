@@ -17,15 +17,12 @@ public class Jugador implements Serializable {
     private String nomCliente;// nombre del user
     FrameLobby lobby;
     private boolean host = false;
-    private Partida partida;
     transient private PartidaGUI ventanaPartida;
     private ArrayList<Ficha> fichas;
-    
-    
+    private String hostPartida = "";
     //------------------------------------------------CONSTRUCTOR
     public Jugador(FrameLobby lobby) {
         this.lobby = lobby;
-        this.partida = null;
         this.ventanaPartida = null;
         this.fichas = new ArrayList<>();
         this.ventanaPartida = null;
@@ -56,34 +53,36 @@ public class Jugador implements Serializable {
         return fichas;
     }
 
-    public Partida getPartida() {
-        return partida;
+    public String getHostPartida() {
+        return hostPartida;
     }
 
-    public void setPartida(Partida partida) {
-        this.partida = partida;
+    public void setHostPartida(String host) {
+        this.hostPartida = host;
     }
-    
+
+    public DataInputStream getEntrada() {
+        return entrada;
+    }
+
+    public DataOutputStream getSalida() {
+        return salida;
+    }
+
+    public ObjectOutputStream getSalidaO() {
+        return salidaO;
+    }
+
+    public ObjectInputStream getEntradaO() {
+        return entradaO;
+    }
+
+    public void setFichas(ArrayList<Ficha> fichas) {
+        this.fichas = fichas;
+    }
     
     public void setHost(boolean host) {
         this.host = host;
-    }
-    
-    public void refrescaNombresPartida(){
-        int cont = 0;
-        for (int i = 0; i < getPartida().getJugadores().size(); i++) {
-           
-            Jugador j = getPartida().getJugadores().get(i);
-            if (cont==0 && j != this) {
-                getVentanaPartida().getLblEnemigo1().setText(j.getNomCliente());
-                cont++;
-            }else if (cont==1 && j != this){
-                getVentanaPartida().getLblEnemigo2().setText(j.getNomCliente());
-                cont++;
-            }else if (cont==2 && j != this)
-                getVentanaPartida().getLblEnemigo2().setText(j.getNomCliente());
-            
-        }
     }
     
     public void conexion(int puerto) throws IOException{
@@ -104,7 +103,7 @@ public class Jugador implements Serializable {
             System.out.println("\tEl servidor no esta levantado");
             System.out.println("\t=============================");
         }
-        new ThreadJugador(entrada, salida, lobby, salidaO, entradaO).start();
+        new ThreadJugador(entrada, salida, lobby, salidaO, entradaO, this).start();
         
    }
     

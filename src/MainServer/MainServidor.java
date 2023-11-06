@@ -1,7 +1,5 @@
 package MainServer;
 
-import Jugador.*;
-import MainServer.*;
 import Partida.*;
 import java.io.*;
 import java.net.*;

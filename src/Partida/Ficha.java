@@ -1,10 +1,6 @@
-
 package Partida;
 import java.io.Serializable;
-
-
-/*
-public enum ColorEnum {
+/*public enum ColorEnum {
     NEGRO(0), //hxdc: 0
     AZUL(1), //hxdc azul: 255
     ROJO(2), //hxdc rojo: 16711680
@@ -19,13 +15,13 @@ public enum ColorEnum {
     public int getValor() {
         return valor;
     }
-}
-*/
-
+}*/
 public class Ficha implements Serializable{
     int num;
     int color;
     boolean comodin;
+    int posX = -1;
+    int posY = -1;  
     
     public Ficha(int num, int color, boolean comodin) {
         this.num = num;
@@ -60,6 +56,22 @@ public class Ficha implements Serializable{
 
     public void setComodin(boolean comodin) {
         this.comodin = comodin;
+    }
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public int getPosY() {
+        return posY;
+    }
+
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
     }
     
     

@@ -1,6 +1,6 @@
 package Jugador;
 
-import Partida.Partida;
+import Partida.Ficha;
 import Partida.PartidaGUI;
 import java.io.*;
 import java.util.ArrayList;
@@ -17,13 +17,14 @@ public class ThreadJugador extends Thread implements Serializable{
     
     FrameLobby lobby; //referencia acliente
     PartidaGUI ventanaPartida;
-    public ThreadJugador (DataInputStream entrada,DataOutputStream salida,FrameLobby lobby, ObjectOutputStream salidaO, ObjectInputStream entradaO) throws IOException{
+    Jugador jugador;
+    public ThreadJugador (DataInputStream entrada,DataOutputStream salida,FrameLobby lobby, ObjectOutputStream salidaO, ObjectInputStream entradaO, Jugador jugador) throws IOException{
         this.entrada = entrada;
         this.salida = salida;
         this.salidaO = salidaO;
         this.entradaO = entradaO;
-        
         this.lobby = lobby;
+        this.jugador = jugador;
     }
     public void run(){
         int opcion=0;
@@ -37,20 +38,19 @@ public class ThreadJugador extends Thread implements Serializable{
                         try {
                             ArrayList<String> servers = new ArrayList<>();
                             int tamannoPartidas = entrada.readInt();
-                            System.out.println("Tamaño Partidas variable: "+tamannoPartidas);
-                            for (int i = 0; i < tamannoPartidas; i++) {
+                            for (int i = 0; i < tamannoPartidas; i++) 
                                 servers.add(entrada.readUTF());
-                            }
-                            System.out.println("Tamaño Servers: " + servers.size());
                             lobby.refreshDefensesListBox(servers);
                         } catch (Exception e) {
                             System.out.println(e);
                         }
-                        
-                        //System.out.println(name);
-                        //System.out.println("Estoy en el Thread Jugador");
                         break;
-                    case 3: //se debe refrescar los jugadores en la sala
+                    case 2:
+                        jugador.setHostPartida(entrada.readUTF());
+                        break;
+                    case 3:
+                        jugador.setFichas((ArrayList<Ficha>)entradaO.readObject());
+                        jugador.getVentanaPartida().setMano();
                         break;
                     case 20:
                         lobby.setVisible(true);
@@ -61,8 +61,10 @@ public class ThreadJugador extends Thread implements Serializable{
                 }
          }
          catch (IOException e){
-            System.out.println("Error en la comunicacion "+"Informacion para el usuario   pinga");
+            System.out.println("Error en la comunicacion ");
             break;
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ThreadJugador.class.getName()).log(Level.SEVERE, null, ex);
             }
       }
       System.out.println("se desconecto el servidor");
