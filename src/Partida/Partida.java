@@ -6,15 +6,16 @@ import MainServer.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Partida implements Serializable {
-    ArrayList<Ficha> mesa;
+    ArrayList<ArrayList<Ficha>> mesa;
     ArrayList<Ficha> bote;
-    String host;
     ArrayList<ThreadMainServer> threadsInLobby;
-    //ArrayList<Jugador> jugadores;
+    String host;
     Random rand = new Random();
-    
+    int turno;
     public Partida(String host, ThreadMainServer threadHost) {
         this.host = host;
         this.bote = new ArrayList<>();
@@ -23,6 +24,15 @@ public class Partida implements Serializable {
         threadsInLobby.add(threadHost);
         generarFichas(true);
         generarFichas(false);
+        this.turno = 0;
+    }
+    
+    public int getTurno(){
+        return turno%threadsInLobby.size();
+    }
+    
+    public void sigTurno(){
+        turno++;
     }
     
     public void generarFichas(boolean flag){
@@ -55,6 +65,30 @@ public class Partida implements Serializable {
         return threadsInLobby;
     }
     
+    
+    public Ficha tomarFichaBote(){
+        if(bote.size() > 0 ){
+            int randomNumber = rand.nextInt(bote.size());
+            return bote.remove(randomNumber);
+        }return null;
+    }
+    
+    public void actualizarTurno(){
+        for (int i = 0; i < threadsInLobby.size(); i++) {
+            ThreadMainServer get = threadsInLobby.get(i);
+            try {
+                get.getSalida().writeInt(100);
+                if(getTurno() == i){
+                    get.getSalida().writeBoolean(true);
+                }else{
+                    get.getSalida().writeBoolean(false);
+                }
+            } catch (IOException ex) {
+                System.out.println("ERROR EN ACTUALIZAR TURNOS");
+            }
+        }
+        
+    }
     
     
 }

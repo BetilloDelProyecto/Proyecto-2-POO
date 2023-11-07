@@ -5,6 +5,9 @@ import Jugador.Jugador;
 import Partida.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ThreadMainServer extends Thread{
     transient Socket jugador = null;//referencia a socket de comunicacion de cliente
@@ -20,6 +23,40 @@ public class ThreadMainServer extends Thread{
         this.jugador = jugador;
         this.servidor = serv;
     }
+
+    public DataInputStream getEntrada() {
+        return entrada;
+    }
+
+    public void setEntrada(DataInputStream entrada) {
+        this.entrada = entrada;
+    }
+
+    public DataOutputStream getSalida() {
+        return salida;
+    }
+
+    public void setSalida(DataOutputStream salida) {
+        this.salida = salida;
+    }
+
+    public ObjectOutputStream getSalidaO() {
+        return salidaO;
+    }
+
+    public void setSalidaO(ObjectOutputStream salidaO) {
+        this.salidaO = salidaO;
+    }
+
+    public ObjectInputStream getEntradaO() {
+        return entradaO;
+    }
+
+    public void setEntradaO(ObjectInputStream entradaO) {
+        this.entradaO = entradaO;
+    }
+    
+    
     
     public void run(){
         try{
@@ -44,6 +81,7 @@ public class ThreadMainServer extends Thread{
                                 String host = entrada.readUTF();
                                 Partida nueva = new Partida(host,this);
                                 servidor.getPartidas().add(nueva);
+                                nueva.actualizarTurno();
                                 
                             }
                             for (int i = 0; i < servidor.threadsMainServer.size(); i++) {
@@ -84,11 +122,12 @@ public class ThreadMainServer extends Thread{
                         
                         break;
 
-                    case 3://se inicia la partida por el host
+                    case 3: //se inicia la partida por el host
                         
                         svBuscado = entrada.readUTF();
                         Partida partidaBuscada = partidaBuscada(svBuscado);
                         if (partidaBuscada != null) {
+                            partidaBuscada.actualizarTurno();
                             for (int i = 0; i < partidaBuscada.getThreadsInLobby().size(); i++) {
                                 ThreadMainServer get = partidaBuscada.getThreadsInLobby().get(i);
                                 get.salida.writeInt(3);
@@ -97,6 +136,62 @@ public class ThreadMainServer extends Thread{
                         }else{
                             System.out.println("Partida no encontrada, error en el servidor.");
                             
+                        }
+                        //Se reparten fichas
+                        
+                        //se asignan turnos
+                        
+                      
+                        break;
+                    case 4: //se toma una ficha del bote
+                        svBuscado = entrada.readUTF();
+                        partidaBuscada = partidaBuscada(svBuscado);
+                        if (partidaBuscada != null) {
+                            salida.writeInt(4);
+                            Ficha ficha = partidaBuscada.tomarFichaBote();
+                            if ( ficha != null)
+                                salidaO.writeObject(partidaBuscada.tomarFichaBote());
+                            else
+                                salida.writeInt(21);
+                            
+                            partidaBuscada.sigTurno();
+                            partidaBuscada.actualizarTurno();
+                        }else{
+                            System.out.println("Partida no encontrada, error en el servidor. OPCION 4 Thre");
+                        }
+                        //Se reparten fichas
+                        
+                        //se asignan turnos
+                        
+                      
+                        break;
+                    case 5: //se ingresa una jugada en la mesa
+                        svBuscado = entrada.readUTF();
+                        int fila = entrada.readInt();
+                        int columna = entrada.readInt();
+                        partidaBuscada = partidaBuscada(svBuscado);
+                        if (partidaBuscada != null) {
+                            try {
+                                ArrayList<Ficha> jugada = (ArrayList<Ficha>)entradaO.readObject();
+                                System.out.println("ES AQUI ASQUEROSOS");
+                                for (int i = 0; i < jugada.size(); i++) {
+                                    
+                                    Ficha get = jugada.get(i);
+                                    System.out.println(get);
+
+                                }
+                                for (int i = 0; i < partidaBuscada.getThreadsInLobby().size(); i++) {
+                                    ThreadMainServer get = partidaBuscada.getThreadsInLobby().get(i);
+                                    get.salida.writeInt(5);
+                                    get.salidaO.writeObject(jugada);
+                                    get.salida.writeInt(fila);
+                                    get.salida.writeInt(columna);
+                                }
+                            } catch (ClassNotFoundException ex) {
+                                System.out.println("NO SE ENCONTRO EL ARRAY LIST DE LA JUGADA");
+                            }
+                        }else{
+                            System.out.println("Partida no encontrada, error en el servidor. OPCION 4 Thre");
                         }
                         //Se reparten fichas
                         

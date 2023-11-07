@@ -2,12 +2,13 @@
 package Partida;
 
 import Jugador.*;
-import java.awt.Color;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import java.util.*;
+import javax.swing.*;
+import static javax.swing.JOptionPane.*;
 
 public class PartidaGUI extends javax.swing.JFrame implements Serializable{
     Jugador jugador;
@@ -33,6 +34,8 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         pnlMano = new javax.swing.JPanel();
         btnIniciarPartida = new javax.swing.JButton();
         btnSalirPartida = new javax.swing.JButton();
+        btnCogerMano = new javax.swing.JButton();
+        btnColocarFichas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -83,6 +86,20 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
             }
         });
 
+        btnCogerMano.setText("Coger Ficha");
+        btnCogerMano.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCogerManoActionPerformed(evt);
+            }
+        });
+
+        btnColocarFichas.setText("Colocar");
+        btnColocarFichas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnColocarFichasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -97,17 +114,23 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblEnemigo2)
-                        .addGap(23, 23, 23))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(pnlMano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(91, 91, 91)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnIniciarPartida)
-                            .addComponent(btnSalirPartida))
-                        .addContainerGap(104, Short.MAX_VALUE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnIniciarPartida)
+                                    .addComponent(btnSalirPartida))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                                .addComponent(btnCogerMano, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(btnColocarFichas)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addComponent(pnlMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(lblEnemigo2)
+                .addGap(23, 23, 23))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -125,14 +148,16 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                         .addComponent(pnlMesa, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnIniciarPartida)
-                        .addGap(30, 30, 30)
-                        .addComponent(btnSalirPartida)
-                        .addGap(116, 116, 116))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(pnlMano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34))))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(btnIniciarPartida)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnSalirPartida)
+                            .addGap(73, 73, 73)
+                            .addComponent(btnColocarFichas))
+                        .addComponent(pnlMano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCogerMano, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34))
         );
 
         pack();
@@ -145,7 +170,9 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
             System.out.println("SÍ TIENE PARTIDA EL JUGADOR");
         }
     }//GEN-LAST:event_btnSalirPartidaActionPerformed
-
+    
+    
+    
     private void btnIniciarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarPartidaActionPerformed
         try {
             jugador.getSalida().writeInt(3);
@@ -159,6 +186,35 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
             System.out.println("COCOS LOCOS");
         }
     }//GEN-LAST:event_btnIniciarPartidaActionPerformed
+
+    private void btnCogerManoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCogerManoActionPerformed
+        if(jugador.isTurno()){
+            try {
+            jugador.getSalida().writeInt(4);
+            jugador.getSalida().writeUTF(jugador.getHostPartida());
+            
+            } catch (IOException ex) {
+                System.out.println("NO SE PUDO ENVIAR LA SENHA 4 DEL BTN DE LA MANO");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "No estas en tu turno, achantela...", "Error, no puede tomar una ficha", ERROR_MESSAGE);
+        
+        }
+        
+    }//GEN-LAST:event_btnCogerManoActionPerformed
+
+    private void btnColocarFichasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarFichasActionPerformed
+        if(jugador.isTurno()){
+            if(jugador.validarJugada()){
+                
+            }else
+                JOptionPane.showMessageDialog(null, "Jugada no valida, sobo...", "Error, jugada no valida", ERROR_MESSAGE);
+            
+        }else
+            JOptionPane.showMessageDialog(null, "No estas en tu turno, achantela...", "Error, sin turno", ERROR_MESSAGE);
+        
+        
+    }//GEN-LAST:event_btnColocarFichasActionPerformed
     
     
     public static void main(String args[]) {
@@ -204,7 +260,7 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
             case 2:
                 return new Color(255,0,0);//rojo
             case 3:
-                return new Color(245,241,12);//amarillo
+                return new Color(166, 123, 3);//amarillo
             default:
                 return new Color(127,16,224);//morado, por si llega a fallar
         }
@@ -240,10 +296,78 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
             posX = 0;
             for (int j = 0; j < 16; j++){
                 matrizMesa[i][j] = new JLabel("");
-                //matrizMesa[i][j].setOpaque(true);
+                matrizMesa[i][j].setFont(new Font("Arial", Font.PLAIN, 20));
+                matrizMesa[i][j].setHorizontalAlignment(JLabel.CENTER);
                 matrizMesa[i][j].setLayout(null);
                 matrizMesa[i][j].setSize(51,54);
-                matrizMesa[i][j].setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+                matrizMesa[i][j].setBorder(javax.swing.BorderFactory.createLineBorder(new Color(102, 102, 102)));
+                JLabel label = matrizMesa[i][j];
+                matrizMesa[i][j].addMouseListener(new MouseListener() {
+                    
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if(label.getText() == "" ){//caso para acomodar mi jugada
+                            if(jugador.getSeleccionadas().size() != 0){
+                                System.out.println("FICHAS SELECCIONADAS");
+                                for (int i = 0; i < jugador.getSeleccionadas().size(); i++) {
+                                    
+                                    Ficha get = jugador.getSeleccionadas().get(i);
+                                    System.out.println(get);
+
+                                }
+                                int[] posicion = obtenerPosicionLabelClickeado(label);
+                                if (posicion[0] != -1 && posicion[1] != -1) {
+                                    int fila = posicion[0];
+                                    int columna = posicion[1];
+                                    System.out.println("FILA,COL: " + fila+","+columna);
+                                    if(validarJugada(fila, columna, jugador.getSeleccionadas().size())){
+                                        try {
+                                            ArrayList<Ficha> nuevaJugada = jugador.getSeleccionadas();
+                                            jugador.getSalida().writeInt(5);
+                                            jugador.getSalida().writeUTF(jugador.getHostPartida());
+                                            jugador.getSalida().writeInt(fila);
+                                            jugador.getSalida().writeInt(columna);
+                                            jugador.getSalidaO().writeObject(nuevaJugada);
+                                        } catch (IOException ex) {
+                                            System.out.println("NO SE PUDO MANDAR LA SENHAL DE COLOCAR JUGADA EN LA MESA, OPCION 5");
+                                        }
+                                    }else{
+                                        JOptionPane.showMessageDialog(null, "Tu jugada no cabe en esa posicion", "Error, posicion incorrecta", ERROR_MESSAGE);
+                                    }
+                                }   
+                            
+                            }else{
+                                JOptionPane.showMessageDialog(null, "No hay nada seleccionado", "Error, posicion incorrecta", ERROR_MESSAGE);
+                            }
+                            jugador.getSeleccionadas().clear();
+                        }else{//caso para reacomodar una jugada hecha
+                            jugador.getSeleccionadas().clear();
+                        }
+                        
+                        // Obtiene el texto y el color del JLabel cuando se hace clic en él
+                        String labelText = label.getText();
+                        Color labelColor = label.getForeground();
+                        
+                        
+                    }
+
+                    // Implementa otros métodos del MouseListener
+                    @Override
+                    public void mousePressed(MouseEvent e) {}
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {}
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        label.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 1));
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        label.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                    }
+                });
                 pnlMesa.add(matrizMesa[i][j]);
                 matrizMesa[i][j].setLocation(posX, posY);
                 posX += 51;
@@ -258,9 +382,55 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
             posX = 0;
             for (int j = 0; j < 13; j++){
                 matrizMano[i][j] = new JLabel("");
-                //matrizMano[i][j].setOpaque(true);
+                matrizMano[i][j].setFont(new Font("Arial", Font.PLAIN, 20));
+                matrizMano[i][j].setHorizontalAlignment(JLabel.CENTER);
                 matrizMano[i][j].setLayout(null);
                 matrizMano[i][j].setSize(45,64);
+                matrizMano[i][j].setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+                JLabel label = matrizMano[i][j];
+                matrizMano[i][j].addMouseListener(new MouseListener() {
+                    
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        // Obtiene el texto y el color del JLabel cuando se hace clic en él
+                        String labelText = label.getText();
+                        Color labelColor = label.getForeground();
+                        System.out.println("Texto: " + labelText);
+                        System.out.println("Color de foreground: " + labelColor);
+                        int color = 0;
+                        if(labelColor.equals(Color.BLACK)){
+                            color = 0;
+                        }else if(labelColor.equals(Color.BLUE)){
+                            color = 1;
+                        }else if(labelColor.equals(Color.RED)){
+                            color = 2;
+                        }else{
+                            color = 3;
+                        }
+                        if(labelText.equals(":)")){
+                            jugador.getSeleccionadas().add(new Ficha(0,0,true));
+                        }else{
+                            jugador.getSeleccionadas().add(new Ficha(Integer.parseInt(labelText),color,false));
+                        }
+                    }
+
+                    // Implementa otros métodos del MouseListener
+                    @Override
+                    public void mousePressed(MouseEvent e) {}
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {}
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        label.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 1));
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        label.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                    }
+                });
                 matrizMano[i][j].setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
                 pnlMano.add(matrizMano[i][j]);
                 matrizMano[i][j].setLocation(posX, posY);
@@ -270,7 +440,71 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         }
     }
     
+    public void agregarFichaMano(Ficha ficha){
+        JLabel lbl = getPosLibreMano();
+        if (lbl != null){
+            lbl.setText(ficha.getNum()+"");
+            lbl.setForeground(getColor(ficha.getColor()));
+        }else{
+            JOptionPane.showMessageDialog(null, "No hay más campo en tu mano", "Error, no puede tomar una ficha", ERROR_MESSAGE);
+        }
+    }
+    
+    public int[] obtenerPosicionLabelClickeado(JLabel label) {
+        for (int i = 0; i < 11; i++) 
+            for (int j = 0; j < 16; j++) 
+                if (matrizMesa[i][j] == label) {
+                    int[] posicion = {i, j};
+                    return posicion;
+                }
+        int[] noEncontrado = {-1, -1};
+        return noEncontrado;
+    }
+    
+    public boolean validarJugada(int r,int c,int largo){
+        System.out.println("R: " + r + " C: " + c + "Largo: " + largo );
+        if(c != 0 && !"".equals(matrizMesa[r][c-1].getText())){
+            System.out.println("CASO1");
+            return false;
+        }else if(largo+c > 16){
+            System.out.println("CASO2");
+            return false;
+        }else if(largo+c == 16){
+            System.out.println("CASO3");
+            largo--;
+        }else{
+            System.out.println("CASO4");
+            for (int i = c; i <= c+largo; i++) {
+                if(!"".equals(matrizMesa[r][i].getText()))
+                    return false;
+            }
+            return true;
+        }
+        return true;
+        
+    }
+    
+    public void pintarJugada(int r,int c,ArrayList<Ficha> jugada){
+        int cont = 0;
+        for (int i = c; i < c+jugada.size(); i++) {
+            System.out.println("fila,columna:  "+r+","+i);
+            matrizMesa[r][i].setText(jugada.get(cont).getNum()+"");
+            matrizMesa[r][i].setForeground(getColor(jugada.get(cont++).getColor()));
+            matrizMesa[r][i].repaint();
+            matrizMesa[r][i].revalidate();
+            
+        }
+        pnlMesa.repaint();
+        pnlMesa.revalidate();
+    }
+    
+    public void msgError(){
+        JOptionPane.showMessageDialog(null, "No hay más fichas en el bote", "Error, no puede tomar una ficha", ERROR_MESSAGE);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCogerMano;
+    private javax.swing.JButton btnColocarFichas;
     private javax.swing.JButton btnIniciarPartida;
     private javax.swing.JButton btnSalirPartida;
     private javax.swing.JLabel lblEnemigo1;

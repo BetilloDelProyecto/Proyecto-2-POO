@@ -1,21 +1,6 @@
 package Partida;
 import java.io.Serializable;
-/*public enum ColorEnum {
-    NEGRO(0), //hxdc: 0
-    AZUL(1), //hxdc azul: 255
-    ROJO(2), //hxdc rojo: 16711680
-    AMARILLO(3); //hxdc amarillo: 16776960
 
-    private final int valor;
-
-    private ColorEnum(int valor) {
-        this.valor = valor;
-    }
-
-    public int getValor() {
-        return valor;
-    }
-}*/
 public class Ficha implements Serializable{
     int num;
     int color;

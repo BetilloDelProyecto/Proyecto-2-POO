@@ -15,7 +15,7 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
     public FrameLobby() {
         try {
             initComponents();
-            setLayout(null);
+            this.setLayout(null);
             jugador = new Jugador(this);
             jugador.conexion(1025);
             jugador.salida.writeInt(1);
@@ -192,6 +192,7 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
             jugador.salida.writeUTF(txfNickName.getText());
             jugador.getVentanaPartida().getBtnSalirPartida().setText("Cerrar Lobby");
             jugador.setHostPartida(jugador.getNomCliente());
+            
             
         } catch (IOException ex) {
             System.out.println("No se pudo crear la lobby");
