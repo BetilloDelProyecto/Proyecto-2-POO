@@ -6,8 +6,8 @@ public class Ficha implements Serializable{
     int color;
     boolean comodin;
     int posX = -1;
-    int posY = -1;  
-    
+    int posY = -1;
+
     public Ficha(int num, int color, boolean comodin) {
         this.num = num;
         this.color = color;
@@ -58,6 +58,5 @@ public class Ficha implements Serializable{
     public void setPosY(int posY) {
         this.posY = posY;
     }
-    
     
 }

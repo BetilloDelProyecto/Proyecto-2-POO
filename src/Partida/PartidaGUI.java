@@ -14,6 +14,7 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
     Jugador jugador;
     JLabel[][] matrizMesa = new JLabel[11][16];
     JLabel[][] matrizMano = new JLabel[3][13];
+    
     public PartidaGUI() {
         initComponents();
         this.setLayout(null);
@@ -171,10 +172,9 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         }
     }//GEN-LAST:event_btnSalirPartidaActionPerformed
     
-    
-    
     private void btnIniciarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarPartidaActionPerformed
         try {
+            //getBtnIniciarPartida().setVisible(false);
             jugador.getSalida().writeInt(3);
             jugador.getSalida().writeUTF(jugador.getHostPartida());
             System.out.println("Punto buscado justo abajo: ");
@@ -216,7 +216,6 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         
     }//GEN-LAST:event_btnColocarFichasActionPerformed
     
-    
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -248,9 +247,11 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
     public void setJugador(Jugador jugador) {
         this.jugador = jugador;
     }
+    
     public Jugador getJugador() {
         return jugador;
     }
+    
     public Color getColor(int n){
         switch (n) {
             case 0:
@@ -320,22 +321,28 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                                     int fila = posicion[0];
                                     int columna = posicion[1];
                                     System.out.println("FILA,COL: " + fila+","+columna);
-                                    if(validarJugada(fila, columna, jugador.getSeleccionadas().size())){
-                                        try {
-                                            ArrayList<Ficha> nuevaJugada = jugador.getSeleccionadas();
-                                            jugador.getSalida().writeInt(5);
-                                            jugador.getSalida().writeUTF(jugador.getHostPartida());
-                                            jugador.getSalida().writeInt(fila);
-                                            jugador.getSalida().writeInt(columna);
-                                            jugador.getSalidaO().writeObject(nuevaJugada);
-                                        } catch (IOException ex) {
-                                            System.out.println("NO SE PUDO MANDAR LA SENHAL DE COLOCAR JUGADA EN LA MESA, OPCION 5");
+                                    
+                                    if(jugador.validarJugada()){
+                                        if(validarJugada(fila, columna, jugador.getSeleccionadas().size())){
+                                            try {
+                                                ArrayList<Ficha> nuevaJugada = jugador.getSeleccionadas();
+                                                jugador.getSalida().writeInt(5);
+                                                jugador.getSalida().writeUTF(jugador.getHostPartida());
+                                                jugador.getSalida().writeInt(fila);
+                                                jugador.getSalida().writeInt(columna);
+                                                jugador.getSalida().writeInt(nuevaJugada.size());
+                                                for(Ficha f: nuevaJugada)
+                                                    jugador.getSalidaO().writeObject(f);
+                                            } catch (IOException ex) {
+                                                System.out.println("NO SE PUDO MANDAR LA SENHAL DE COLOCAR JUGADA EN LA MESA, OPCION 5");
+                                            }
+                                        }else{
+                                            JOptionPane.showMessageDialog(null, "Tu jugada no cabe en esa posicion", "Error, posicion incorrecta", ERROR_MESSAGE);
                                         }
                                     }else{
-                                        JOptionPane.showMessageDialog(null, "Tu jugada no cabe en esa posicion", "Error, posicion incorrecta", ERROR_MESSAGE);
-                                    }
-                                }   
-                            
+                                        JOptionPane.showMessageDialog(null, "Jugada no valida", "JAJAJAJAJAJAJAJAJ", ERROR_MESSAGE);
+                                    }   
+                                }
                             }else{
                                 JOptionPane.showMessageDialog(null, "No hay nada seleccionado", "Error, posicion incorrecta", ERROR_MESSAGE);
                             }
@@ -407,11 +414,13 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                         }else{
                             color = 3;
                         }
-                        if(labelText.equals(":)")){
-                            jugador.getSeleccionadas().add(new Ficha(0,0,true));
+                        if(labelText.equals("0")){
+                            jugador.getSeleccionadas().add(new Ficha(0,0, true));
                         }else{
-                            jugador.getSeleccionadas().add(new Ficha(Integer.parseInt(labelText),color,false));
+                            jugador.getSeleccionadas().add(new Ficha(Integer.parseInt(labelText),color, false));
                         }
+                        System.out.println("Sout inicial");
+                        jugador.ordenarFichas();
                     }
 
                     // Implementa otros métodos del MouseListener
@@ -488,7 +497,10 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         int cont = 0;
         for (int i = c; i < c+jugada.size(); i++) {
             System.out.println("fila,columna:  "+r+","+i);
-            matrizMesa[r][i].setText(jugada.get(cont).getNum()+"");
+            if (jugada.get(cont).isComodin())
+                matrizMesa[r][i].setText(":)");
+            else
+                matrizMesa[r][i].setText(jugada.get(cont).getNum()+"");
             matrizMesa[r][i].setForeground(getColor(jugada.get(cont++).getColor()));
             matrizMesa[r][i].repaint();
             matrizMesa[r][i].revalidate();

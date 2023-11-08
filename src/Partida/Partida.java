@@ -26,27 +26,30 @@ public class Partida implements Serializable {
         generarFichas(false);
         this.turno = 0;
     }
-    
     public int getTurno(){
         return turno%threadsInLobby.size();
     }
-    
     public void sigTurno(){
         turno++;
     }
-    
     public void generarFichas(boolean flag){
-        if (flag) 
-            bote.add(new Ficha(0, 0, true));
-        else
-            bote.add(new Ficha(0, 2, true));
+        if (flag) {
+             Ficha com = new Ficha(0, 0, true);
+             bote.add(com);
+        }else{
+            Ficha com = new Ficha(0, 2, true);
+            bote.add(com);
+        }
         for (int i = 1; i < 14; i++) {
             for (int j = 0; j < 4; j++) {
                 bote.add(new Ficha(i, j, false));
             }
         }
     }
-    
+    public void imprimirFichas(){
+        for (int i = 0; i < bote.size(); i++) 
+            System.out.println(bote.get(i));
+    }
    
     public ArrayList<Ficha> repartirFichas(){
         ArrayList <Ficha> mano = new ArrayList<>();

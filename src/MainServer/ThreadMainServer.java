@@ -172,13 +172,14 @@ public class ThreadMainServer extends Thread{
                         partidaBuscada = partidaBuscada(svBuscado);
                         if (partidaBuscada != null) {
                             try {
-                                ArrayList<Ficha> jugada = (ArrayList<Ficha>)entradaO.readObject();
-                                System.out.println("ES AQUI ASQUEROSOS");
-                                for (int i = 0; i < jugada.size(); i++) {
-                                    
-                                    Ficha get = jugada.get(i);
-                                    System.out.println(get);
-
+                                
+                                
+                                ArrayList<Ficha> jugada = new ArrayList<>(); // Crear un nuevo ArrayList
+                                int sizeJugada = entrada.readInt();
+                                System.out.println("Nuevo ArrayList en ThreadMainSv: ");
+                                for (int i = 0; i < sizeJugada; i++) {
+                                    jugada.add((Ficha)entradaO.readObject());
+                                    System.out.println(jugada.get(i));
                                 }
                                 for (int i = 0; i < partidaBuscada.getThreadsInLobby().size(); i++) {
                                     ThreadMainServer get = partidaBuscada.getThreadsInLobby().get(i);
@@ -187,6 +188,7 @@ public class ThreadMainServer extends Thread{
                                     get.salida.writeInt(fila);
                                     get.salida.writeInt(columna);
                                 }
+                               
                             } catch (ClassNotFoundException ex) {
                                 System.out.println("NO SE ENCONTRO EL ARRAY LIST DE LA JUGADA");
                             }
