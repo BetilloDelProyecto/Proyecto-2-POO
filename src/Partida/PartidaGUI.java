@@ -36,7 +36,7 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         btnIniciarPartida = new javax.swing.JButton();
         btnSalirPartida = new javax.swing.JButton();
         btnCogerMano = new javax.swing.JButton();
-        btnColocarFichas = new javax.swing.JButton();
+        btnTerminarTurno = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -94,10 +94,10 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
             }
         });
 
-        btnColocarFichas.setText("Colocar");
-        btnColocarFichas.addActionListener(new java.awt.event.ActionListener() {
+        btnTerminarTurno.setText("Terminar Turno");
+        btnTerminarTurno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnColocarFichasActionPerformed(evt);
+                btnTerminarTurnoActionPerformed(evt);
             }
         });
 
@@ -118,16 +118,15 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                         .addComponent(pnlMano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnIniciarPartida)
-                                    .addComponent(btnSalirPartida))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                                .addComponent(btnCogerMano, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGap(26, 26, 26)
-                                .addComponent(btnColocarFichas)
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnSalirPartida)
+                                    .addComponent(btnTerminarTurno)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(btnIniciarPartida)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                        .addComponent(btnCogerMano, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(lblEnemigo2)
@@ -151,13 +150,16 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(btnIniciarPartida)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGap(77, 77, 77)
                             .addComponent(btnSalirPartida)
-                            .addGap(73, 73, 73)
-                            .addComponent(btnColocarFichas))
+                            .addGap(35, 35, 35)
+                            .addComponent(btnTerminarTurno))
                         .addComponent(pnlMano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnCogerMano, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnIniciarPartida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCogerMano, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(34, 34, 34))
         );
 
@@ -203,18 +205,13 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         
     }//GEN-LAST:event_btnCogerManoActionPerformed
 
-    private void btnColocarFichasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColocarFichasActionPerformed
-        if(jugador.isTurno()){
-            if(jugador.validarJugada()){
-                
-            }else
-                JOptionPane.showMessageDialog(null, "Jugada no valida, sobo...", "Error, jugada no valida", ERROR_MESSAGE);
-            
-        }else
-            JOptionPane.showMessageDialog(null, "No estas en tu turno, achantela...", "Error, sin turno", ERROR_MESSAGE);
-        
-        
-    }//GEN-LAST:event_btnColocarFichasActionPerformed
+    private void btnTerminarTurnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminarTurnoActionPerformed
+        ArrayList <ArrayList <Ficha>> mesaJugadas = getArraysMesa();
+        for (int i = 0; i < mesaJugadas.size(); i++) {
+            ArrayList<Ficha> get = mesaJugadas.get(i);
+            System.out.println(get);
+        }
+    }//GEN-LAST:event_btnTerminarTurnoActionPerformed
     
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -322,7 +319,7 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                                     int columna = posicion[1];
                                     System.out.println("FILA,COL: " + fila+","+columna);
                                     
-                                    if(jugador.validarJugada()){
+                                    if(jugador.validarJugada(jugador.getSeleccionadas())){
                                         if(validarJugada(fila, columna, jugador.getSeleccionadas().size())){
                                             try {
                                                 ArrayList<Ficha> nuevaJugada = jugador.getSeleccionadas();
@@ -348,7 +345,9 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                             }
                             jugador.getSeleccionadas().clear();
                         }else{//caso para reacomodar una jugada hecha
+                            
                             jugador.getSeleccionadas().clear();
+                            
                         }
                         
                         // Obtiene el texto y el color del JLabel cuando se hace clic en él
@@ -383,6 +382,24 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         }
     }
     
+    public Ficha getFichaFromLabel(JLabel lbl){
+        int color;
+        if(lbl.getForeground().equals(Color.BLACK)){
+            color = 0;
+        }else if(lbl.getForeground().equals(Color.BLUE)){
+            color = 1;
+        }else if(lbl.getForeground().equals(Color.RED)){
+            color = 2;
+        }else{
+            color = 3;
+        }
+        if(lbl.getText().equals(":)")){
+            return new Ficha(0, color, true);
+        }else{
+            return new Ficha(Integer.parseInt(lbl.getText()),color, false);
+        }
+    }
+    
     public void generarMatrizMano (){
         int posX, posY = 0;
         for (int i = 0; i < 3; i++){
@@ -400,27 +417,9 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         // Obtiene el texto y el color del JLabel cuando se hace clic en él
-                        String labelText = label.getText();
-                        Color labelColor = label.getForeground();
-                        System.out.println("Texto: " + labelText);
-                        System.out.println("Color de foreground: " + labelColor);
-                        int color = 0;
-                        if(labelColor.equals(Color.BLACK)){
-                            color = 0;
-                        }else if(labelColor.equals(Color.BLUE)){
-                            color = 1;
-                        }else if(labelColor.equals(Color.RED)){
-                            color = 2;
-                        }else{
-                            color = 3;
-                        }
-                        if(labelText.equals("0")){
-                            jugador.getSeleccionadas().add(new Ficha(0,0, true));
-                        }else{
-                            jugador.getSeleccionadas().add(new Ficha(Integer.parseInt(labelText),color, false));
-                        }
+                        jugador.getSeleccionadas().add(getFichaFromLabel(label));
                         System.out.println("Sout inicial");
-                        jugador.ordenarFichas();
+                        jugador.ordenarFichas(jugador.getSeleccionadas());
                     }
 
                     // Implementa otros métodos del MouseListener
@@ -510,15 +509,46 @@ public class PartidaGUI extends javax.swing.JFrame implements Serializable{
         pnlMesa.revalidate();
     }
     
+    public ArrayList<ArrayList<Ficha>> getArraysMesa(){
+        ArrayList<ArrayList<Ficha>> jugadas = new ArrayList <>();
+        for (int i = 0; i < 11; i++) {
+            ArrayList <Ficha> play = new ArrayList<>();
+            for (int j = 0; j < 15; j++) {
+                if (!"".equals(matrizMesa[i][j].getText())){
+                    play.add(getFichaFromLabel(matrizMesa[i][j]));
+                    if(j == 14 && !"".equals(matrizMesa[i][j+1].getText())){
+                        play.add(getFichaFromLabel(matrizMesa[i][j+1]));
+                    }
+                    if ("".equals(matrizMesa[i][j+1].getText())||j ==14){
+                        
+                        ArrayList <Ficha> playClone = (ArrayList <Ficha>)play.clone();
+                        jugadas.add(playClone);
+                        play.clear();
+                    }
+                }
+            }
+        }
+        return jugadas;
+    }
+    
+    public boolean mesaValida(ArrayList<ArrayList<Ficha>> mesa){
+        for (int i = 0; i < mesa.size(); i++) {
+            ArrayList<Ficha> get = mesa.get(i);
+            if (!jugador.validarJugada(get))
+                return false;
+        }
+        return true;
+    }
+    
     public void msgError(){
         JOptionPane.showMessageDialog(null, "No hay más fichas en el bote", "Error, no puede tomar una ficha", ERROR_MESSAGE);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCogerMano;
-    private javax.swing.JButton btnColocarFichas;
     private javax.swing.JButton btnIniciarPartida;
     private javax.swing.JButton btnSalirPartida;
+    private javax.swing.JButton btnTerminarTurno;
     private javax.swing.JLabel lblEnemigo1;
     private javax.swing.JLabel lblEnemigo2;
     private javax.swing.JLabel lblEnemigo3;

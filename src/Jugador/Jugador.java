@@ -126,38 +126,37 @@ public class Jugador implements Serializable {
         
     }
    
-    public void ordenarFichas(){
-        for (int i = 0; i < seleccionadas.size() - 1; i++){
-            for (int j = 0; j < seleccionadas.size() - 1 - i; j++) {
-                Ficha ficha1 = seleccionadas.get(j);
-                Ficha ficha2 = seleccionadas.get(j + 1);
+    public void ordenarFichas(ArrayList<Ficha>jugada){
+        for (int i = 0; i < jugada.size() - 1; i++){
+            for (int j = 0; j < jugada.size() - 1 - i; j++) {
+                Ficha ficha1 = jugada.get(j);
+                Ficha ficha2 = jugada.get(j + 1);
                 if (ficha1.getNum() > ficha2.getNum()) {
                     // Intercambiar las fichas en la lista
-                    seleccionadas.set(j, ficha2);
-                    seleccionadas.set(j + 1, ficha1);
+                    jugada.set(j, ficha2);
+                    jugada.set(j + 1, ficha1);
                 }
             }
         }
-        System.out.println("Sout del ArrayList seleccionadas en el Sort: " + seleccionadas);
+        System.out.println("Sout del ArrayList jugadas en el Sort: " + jugada);
     }
     
-    public void colocarComodin(){
-        for (int i = 0; i < seleccionadas.size(); i++){
-            Ficha f = seleccionadas.get(i);
+    public void colocarComodin(ArrayList<Ficha>jugada){
+        for (int i = 0; i < jugada.size(); i++){
+            Ficha f = jugada.get(i);
             if (f.getNum() == 0){
-                f.setNum(getValorComodin());
+                f.setNum(getValorComodin(jugada));
                 f.setComodin(true);
             }
         }
-        ordenarFichas();
+        ordenarFichas(jugada);
     }
     
-    public boolean esEscalera(){
-        //ordenarFichas();
-        if(seleccionadas.size()>= 3){
-            for (int i = 0; i < seleccionadas.size()-1; i++) {
-                 Ficha ficha = seleccionadas.get(i);
-                 Ficha ficha2 = seleccionadas.get(i+1);
+    public boolean esEscalera(ArrayList<Ficha>jugada){
+        if(jugada.size()>= 3){
+            for (int i = 0; i < jugada.size()-1; i++) {
+                 Ficha ficha = jugada.get(i);
+                 Ficha ficha2 = jugada.get(i+1);
                  if((ficha2.getNum()-1 != ficha.getNum() || ficha.getColor() != ficha2.getColor()) && !ficha.isComodin() && !ficha2.isComodin() ){
                     System.out.println("False esEscalera");
                      return false;
@@ -170,14 +169,15 @@ public class Jugador implements Serializable {
         return false;
     }
 
-    public boolean difColor(){
+    public boolean difColor(ArrayList<Ficha>jugada){
         //ordenarFichas();
-        if(seleccionadas.size()>= 3 && seleccionadas.size()<= 4){
-            for (int i = 0; i < seleccionadas.size(); i++) {
-                 Ficha ficha = seleccionadas.get(i);
-                 for (int j = 0; j < seleccionadas.size(); j++) {
-                    Ficha get = seleccionadas.get(j);
-                    if((ficha.getNum() != get.getNum() && ficha.getColor()== get.getColor()) && !ficha.isComodin() && !get.isComodin()){
+        //cuando es dif color, el comodín no adopta el val numerico del resto de nums, sino que adopta val num + 1
+        if(jugada.size()>= 3 && jugada.size()<= 4){
+            for (int i = 0; i < jugada.size(); i++) {
+                 Ficha ficha = jugada.get(i);
+                 for (int j = 0; j < jugada.size(); j++) {
+                    Ficha get = jugada.get(j);
+                    if(ficha != get&&(ficha.getNum() != get.getNum() && ficha.getColor()== get.getColor()) && !ficha.isComodin() && !get.isComodin()){
                         System.out.println("False DifColor");
                         System.out.println(ficha);
                         System.out.println(get);
@@ -192,24 +192,24 @@ public class Jugador implements Serializable {
         return false;
     }
 
-    public boolean validarJugada(){
+    public boolean validarJugada(ArrayList<Ficha>jugada){
         //ordenarFichas();
-        System.out.println("Seleccionadas: " + seleccionadas);
+        System.out.println("Jugadas: " + jugada);
         if (firstPlay){
-            colocarComodin();
-            if(primeraJugada()){
+            colocarComodin(jugada);
+            if(primeraJugada(jugada)){
                 firstPlay = false;
-                return difColor() || esEscalera();
+                return difColor(jugada) || esEscalera(jugada);
             }else
                 return false;
         }
-        colocarComodin();
-        return difColor() || esEscalera();
+        colocarComodin(jugada);
+        return difColor(jugada) || esEscalera(jugada);
     }
     
-    public boolean hayComodin(){
-       for (int i = 0; i < seleccionadas.size(); i++) {
-           Ficha get = seleccionadas.get(i);
+    public boolean hayComodin(ArrayList<Ficha>jugada){
+       for (int i = 0; i < jugada.size(); i++) {
+           Ficha get = jugada.get(i);
            if(get.getNum()==0)
                return true;
        }
@@ -217,39 +217,39 @@ public class Jugador implements Serializable {
        return false;
     }
 
-    public boolean esExtremo(){//dice si el comodín es un extremo
+    public boolean esExtremo(ArrayList<Ficha>jugada){//dice si el comodín es un extremo
         System.out.println("sout 8");
         //ordenarFichas();
-        for (int i = 0; i < seleccionadas.size() - 1; i++) {
-            Ficha ficha1 = seleccionadas.get(i);
+        for (int i = 0; i < jugada.size() - 1; i++) {
+            Ficha ficha1 = jugada.get(i);
             if(ficha1.getNum() == 0)
                 continue;
-            Ficha ficha2 = seleccionadas.get(i+1);
+            Ficha ficha2 = jugada.get(i+1);
             if (ficha2.getNum()-ficha1.getNum()>1)
                 return false;
         }
         return true;
     }
 
-    public boolean esMedio(){//dice si el comodín está en medio
+    public boolean esMedio(ArrayList<Ficha>jugada){//dice si el comodín está en medio
         //ordenarFichas();
         System.out.println("Sout 666");
-        for (int i = 0; i < seleccionadas.size() - 1; i++) {
-            Ficha ficha1 = seleccionadas.get(i);
+        for (int i = 0; i < jugada.size() - 1; i++) {
+            Ficha ficha1 = jugada.get(i);
             if(ficha1.getNum()==0)
                 continue;
-            Ficha ficha2 = seleccionadas.get(i+1);
+            Ficha ficha2 = jugada.get(i+1);
             if (ficha2.getNum()-ficha1.getNum()==2)
                 return true;
         }
         return false;
     }
-    public boolean esColorComodin(){
-        for (int i = 0; i < seleccionadas.size()-1; i++) {
-            Ficha f1 = seleccionadas.get(i);
+    public boolean esColorComodin(ArrayList<Ficha>jugada){
+        for (int i = 0; i < jugada.size()-1; i++) {
+            Ficha f1 = jugada.get(i);
             if (!f1.isComodin()){
-                for (int j = i+1; j < seleccionadas.size(); j++) {
-                    Ficha f2 = seleccionadas.get(j);
+                for (int j = i+1; j < jugada.size(); j++) {
+                    Ficha f2 = jugada.get(j);
                     if (f1.getNum()!= f2.getNum() || f1.getColor() == f2.getColor()  ){
                         System.out.println("If buscado, f1: " + f1);
                         System.out.println("If buscado, f2: " + f2);
@@ -261,28 +261,28 @@ public class Jugador implements Serializable {
         }
         return true;
     }
-    public int getValorComodin(){
-        if (hayComodin()){
-             if (esColorComodin()){
+    public int getValorComodin(ArrayList<Ficha>jugada){
+        if (hayComodin(jugada)){
+             if (esColorComodin(jugada)){
                  System.out.println("1010");
-                 return seleccionadas.get(1).getNum();
-             }else if(esExtremo()){
+                 return jugada.get(1).getNum();
+             }else if(esExtremo(jugada)){
                  System.out.println("sout 3");
-                 Ficha mayor = seleccionadas.get(seleccionadas.size()-1);
+                 Ficha mayor = jugada.get(jugada.size()-1);
                  if(mayor.getNum() == 13){
                      System.out.println("sout 4");
-                     return seleccionadas.get(1).getNum() - 1;
+                     return jugada.get(1).getNum() - 1;
                  }
                  return mayor.getNum() + 1;
-             }else if (esMedio()){
+             }else if (esMedio(jugada)){
                  System.out.println("sout 5");
-                 for (int i = 0; i < seleccionadas.size() - 1; i++) {
-                     Ficha f1 = seleccionadas.get(i);
+                 for (int i = 0; i < jugada.size() - 1; i++) {
+                     Ficha f1 = jugada.get(i);
                      if (f1.getNum() == 0){
                          System.out.println("sout 6");
                          continue;
                      }
-                     Ficha f2 = seleccionadas.get(i+1);
+                     Ficha f2 = jugada.get(i+1);
                      if (f2.getNum() - f1.getNum() == 2){
                          System.out.println("sout 7");
                          System.out.println(((f1.getNum()+f2.getNum())/2)+"");
@@ -296,11 +296,11 @@ public class Jugador implements Serializable {
         return 0;
     }
     
-    public boolean primeraJugada(){
+    public boolean primeraJugada(ArrayList<Ficha>jugada){
         int cont = 0;
-        for (int i = 0; i < seleccionadas.size(); i++) 
+        for (int i = 0; i < jugada.size(); i++) 
             
-            cont += seleccionadas.get(i).getNum();
+            cont += jugada.get(i).getNum();
         System.out.println("Contador de la play: " + cont);
         return cont >= 30; 
     }

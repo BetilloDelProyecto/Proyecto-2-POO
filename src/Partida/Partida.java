@@ -32,6 +32,12 @@ public class Partida implements Serializable {
     public void sigTurno(){
         turno++;
     }
+
+    public ArrayList<ArrayList<Ficha>> getMesa() {
+        return mesa;
+    }
+    
+    
     public void generarFichas(boolean flag){
         if (flag) {
              Ficha com = new Ficha(0, 0, true);

@@ -181,6 +181,7 @@ public class ThreadMainServer extends Thread{
                                     jugada.add((Ficha)entradaO.readObject());
                                     System.out.println(jugada.get(i));
                                 }
+                                partidaBuscada.getMesa().add(jugada);
                                 for (int i = 0; i < partidaBuscada.getThreadsInLobby().size(); i++) {
                                     ThreadMainServer get = partidaBuscada.getThreadsInLobby().get(i);
                                     get.salida.writeInt(5);
