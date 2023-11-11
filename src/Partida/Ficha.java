@@ -20,7 +20,7 @@ public class Ficha implements Serializable{
 
     @Override
     public String toString() {
-        return "Ficha{" + "num=" + num + ", color=" + color + ", comodin=" + comodin + '}';
+        return "Ficha{" + "num=" + num + ", color=" + color + ", comodin=" + comodin + ", POSX=" + posX + ", POSY=" + posY + '}';
     }
 
     public int getColor() {

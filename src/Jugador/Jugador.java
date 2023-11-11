@@ -3,35 +3,76 @@ package Jugador;
 import Partida.*;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import javax.swing.*;
+import java.util.*;
 
 public class Jugador implements Serializable {
+    //SOCKET STUFF
     public static String IP_SERVER = "localhost"; //IP del Servidor
+    private Socket cliente = null;//para la comunicacion
     private DataInputStream entrada = null;//leer comunicacion
-    DataOutputStream salida = null;//escribir comunicacion
+    private DataOutputStream salida = null;//escribir comunicacion
     private ObjectOutputStream salidaO = null;//Para enviar comunicacion
     private ObjectInputStream entradaO = null;//Para leer comunicacion
-    private boolean firstPlay = true;
-    private Socket cliente = null;//para la comunicacion
-    private String nomCliente;// nombre del user
-    private FrameLobby lobby;
+    //BOOLEANS
     private boolean turno = false;
-    private PartidaGUI ventanaPartida;
-    private ArrayList<Ficha> fichas;
+    private boolean firstPlay = true;
+    //STRINGS
     private String hostPartida = "";
+    private String nomCliente;// nombre del user
+    //GUI
+    private FrameLobby lobby;
+    private PartidaGUI ventanaPartida;
+    //ARRAYS
+    private ArrayList<Ficha> seleccionadas = new ArrayList<>();
+    private ArrayList<Ficha> fichas = new ArrayList<>();
+    private ArrayList<ArrayList<Ficha>> mesa = new ArrayList<>();
+    //FICHA
+    Ficha selec1 = null;
+    Ficha selec2 = null;
     
-    ArrayList<Ficha> seleccionadas;
     //------------------------------------------------CONSTRUCTOR
     public Jugador(FrameLobby lobby) {
         this.lobby = lobby;
-        this.seleccionadas = new ArrayList<>();
-        this.ventanaPartida = null;
-        this.fichas = new ArrayList<>();
         this.ventanaPartida = null;
     }
 
     //----------------------------------------GETTER & SETTER
+
+    public ArrayList<Ficha> getFichas() {
+        return fichas;
+    }
+
+    public Ficha getSelec1() {
+        return selec1;
+    }
+
+    public void setSelec1(Ficha selec1) {
+        this.selec1 = selec1;
+    }
+
+    public Ficha getSelec2() {
+        return selec2;
+    }
+
+    public void setSelec2(Ficha selec2) {
+        this.selec2 = selec2;
+    }
+    
+
+    public ArrayList<ArrayList<Ficha>> getMesa() {
+        return mesa;
+    }
+
+    public void setMesa(ArrayList<ArrayList<Ficha>> mesa) {
+        this.mesa = mesa;
+    }
+    
+
+    public void setFichas(ArrayList<Ficha> fichas) {
+        this.fichas = fichas;
+    }
+    
+    
     public String getNomCliente() {
         return nomCliente;
     }
@@ -54,10 +95,6 @@ public class Jugador implements Serializable {
 
     public void setVentanaPartida(PartidaGUI ventanaPartida) {
         this.ventanaPartida = ventanaPartida;
-    }
-    
-    public ArrayList<Ficha> getFichas() {
-        return fichas;
     }
 
     public String getHostPartida() {
@@ -84,10 +121,6 @@ public class Jugador implements Serializable {
         return entradaO;
     }
 
-    public void setFichas(ArrayList<Ficha> fichas) {
-        this.fichas = fichas;
-    }
-
     public boolean isTurno() {
         return turno;
     }
@@ -104,15 +137,16 @@ public class Jugador implements Serializable {
         this.seleccionadas = seleccionadas;
     }
     
+    
+    //-----------------------------METODOS--------------------------------------
     public void conexion(int puerto) throws IOException{
         try {
             cliente = new Socket(IP_SERVER, puerto);
             entrada = new DataInputStream(cliente.getInputStream());
             salida = new DataOutputStream(cliente.getOutputStream());
-            
             try{
-                salidaO = new ObjectOutputStream(cliente.getOutputStream());//comunic
-                entradaO = new ObjectInputStream(cliente.getInputStream());//comunic
+                salidaO = new ObjectOutputStream(cliente.getOutputStream());
+                entradaO = new ObjectInputStream(cliente.getInputStream());
                 
             }  catch (IOException e) {
                 System.out.println("No sirven los ObjectInputStream en Clase Jugador");
@@ -124,6 +158,14 @@ public class Jugador implements Serializable {
         }
         new ThreadJugador(entrada, salida, lobby, salidaO, entradaO, this).start();
         
+    }
+    
+    public void actualizarFichas(){
+        for (int i = 0; i < fichas.size(); i++) {
+            Ficha get = fichas.get(i);
+            if(get.getNum() == 0)
+                get.setComodin(true);
+        }
     }
    
     public void ordenarFichas(ArrayList<Ficha>jugada){
@@ -170,14 +212,13 @@ public class Jugador implements Serializable {
     }
 
     public boolean difColor(ArrayList<Ficha>jugada){
-        //ordenarFichas();
         //cuando es dif color, el comodín no adopta el val numerico del resto de nums, sino que adopta val num + 1
         if(jugada.size()>= 3 && jugada.size()<= 4){
             for (int i = 0; i < jugada.size(); i++) {
                  Ficha ficha = jugada.get(i);
                  for (int j = 0; j < jugada.size(); j++) {
                     Ficha get = jugada.get(j);
-                    if(ficha != get&&(ficha.getNum() != get.getNum() && ficha.getColor()== get.getColor()) && !ficha.isComodin() && !get.isComodin()){
+                    if(ficha != get&&(ficha.getNum() != get.getNum() || ficha.getColor()== get.getColor()) && !ficha.isComodin() && !get.isComodin()){
                         System.out.println("False DifColor");
                         System.out.println(ficha);
                         System.out.println(get);
@@ -191,9 +232,16 @@ public class Jugador implements Serializable {
         System.out.println("False 2 DifColor");
         return false;
     }
+    
+    public void quitarFichaMano(Ficha f){
+        for (int i = 0; i < fichas.size(); i++) {
+            Ficha get = fichas.get(i);
+            if(get.getNum() == f.getNum() && get.getColor() == f.getColor())
+                fichas.remove(get);
+        }
+    }
 
     public boolean validarJugada(ArrayList<Ficha>jugada){
-        //ordenarFichas();
         System.out.println("Jugadas: " + jugada);
         if (firstPlay){
             colocarComodin(jugada);
@@ -219,7 +267,6 @@ public class Jugador implements Serializable {
 
     public boolean esExtremo(ArrayList<Ficha>jugada){//dice si el comodín es un extremo
         System.out.println("sout 8");
-        //ordenarFichas();
         for (int i = 0; i < jugada.size() - 1; i++) {
             Ficha ficha1 = jugada.get(i);
             if(ficha1.getNum() == 0)
@@ -232,7 +279,6 @@ public class Jugador implements Serializable {
     }
 
     public boolean esMedio(ArrayList<Ficha>jugada){//dice si el comodín está en medio
-        //ordenarFichas();
         System.out.println("Sout 666");
         for (int i = 0; i < jugada.size() - 1; i++) {
             Ficha ficha1 = jugada.get(i);
@@ -244,6 +290,7 @@ public class Jugador implements Serializable {
         }
         return false;
     }
+    
     public boolean esColorComodin(ArrayList<Ficha>jugada){
         for (int i = 0; i < jugada.size()-1; i++) {
             Ficha f1 = jugada.get(i);
@@ -261,6 +308,7 @@ public class Jugador implements Serializable {
         }
         return true;
     }
+    
     public int getValorComodin(ArrayList<Ficha>jugada){
         if (hayComodin(jugada)){
              if (esColorComodin(jugada)){
@@ -288,10 +336,8 @@ public class Jugador implements Serializable {
                          System.out.println(((f1.getNum()+f2.getNum())/2)+"");
                          return (f1.getNum()+f2.getNum())/2;
                      }
-                         
                  }
              }
-
         }
         return 0;
     }

@@ -6,25 +6,23 @@ import java.net.*;
 import java.util.*;
 
 public class MainServidor{
-    ArrayList<Socket> jugadores;
-    ArrayList<ThreadMainServer>  threadsMainServer;
-    ArrayList<String> nombres;
-    ArrayList<Partida> partidas;
-    int cont;
+    //ARRAYS
+    private ArrayList<Socket> jugadores = new ArrayList<>();
+    private ArrayList<ThreadMainServer>  threadsMainServer = new ArrayList<>();
+    private ArrayList<String> nombres = new ArrayList<>();
+    private ArrayList<Partida> partidas = new ArrayList<>();
+    //INTs
+    private int cont;
     
     //ATRIBUTOS PROPIOS//
-    ServerSocket servidorMain;
-    FrameServidorMain ventana;
-    ThreadAceptarClientes threadAceptarClientes;
+    private ServerSocket servidorMain;
+    private FrameServidorMain ventana;
+    private ThreadAceptarClientes threadAceptarClientes;
     
     //-------------------------------------------CONSTRUCTOR----------------
     public MainServidor(FrameServidorMain ventana) {
         this.ventana = ventana;
-        this.jugadores = new ArrayList<>();
-        this.threadsMainServer = new ArrayList<>();
-        this.nombres = new ArrayList<>();
         this.threadAceptarClientes = new ThreadAceptarClientes(this);
-        this.partidas = new ArrayList<>();
     }
     
     //-------------------------------------------GETTER & SETTER----------------
@@ -32,6 +30,57 @@ public class MainServidor{
     public ArrayList<Partida> getPartidas() {
         return partidas;
     }
+
+    public ArrayList<Socket> getJugadores() {
+        return jugadores;
+    }
+
+    public void setJugadores(ArrayList<Socket> jugadores) {
+        this.jugadores = jugadores;
+    }
+
+    public ServerSocket getServidorMain() {
+        return servidorMain;
+    }
+
+    public void setServidorMain(ServerSocket servidorMain) {
+        this.servidorMain = servidorMain;
+    }
+    
+    
+
+    public ArrayList<ThreadMainServer> getThreadsMainServer() {
+        return threadsMainServer;
+    }
+
+    public void setThreadsMainServer(ArrayList<ThreadMainServer> threadsMainServer) {
+        this.threadsMainServer = threadsMainServer;
+    }
+
+    public ArrayList<String> getNombres() {
+        return nombres;
+    }
+
+    public void setNombres(ArrayList<String> nombres) {
+        this.nombres = nombres;
+    }
+
+    public int getCont() {
+        return cont;
+    }
+
+    public void setCont(int cont) {
+        this.cont = cont;
+    }
+
+    public FrameServidorMain getVentana() {
+        return ventana;
+    }
+
+    public void setVentana(FrameServidorMain ventana) {
+        this.ventana = ventana;
+    }
+    
   
     
     //-------------------------------------------METHODS----------------

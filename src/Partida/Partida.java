@@ -1,31 +1,40 @@
 
 package Partida;
 
-import Jugador.*;
 import MainServer.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 
 public class Partida implements Serializable {
-    ArrayList<ArrayList<Ficha>> mesa;
-    ArrayList<Ficha> bote;
-    ArrayList<ThreadMainServer> threadsInLobby;
+    //ARRAYS
+    ArrayList<ArrayList<Ficha>> mesa = new ArrayList<>();
+    ArrayList<Ficha> bote = new ArrayList<>();
+    ArrayList<ThreadMainServer> threadsInLobby = new ArrayList<>();
+    //STRING
     String host;
+    //STUFF
     Random rand = new Random();
+    //INTs
     int turno;
+    
+    //-------------------------------CONSTRUCTOR-------------------------------
     public Partida(String host, ThreadMainServer threadHost) {
         this.host = host;
-        this.bote = new ArrayList<>();
-        this.mesa = new ArrayList<>();
-        this.threadsInLobby = new ArrayList<>();
         threadsInLobby.add(threadHost);
         generarFichas(true);
         generarFichas(false);
         this.turno = 0;
     }
+   
+    //-------------------------------GET & SET----------------------------------
+    public String getHost() {
+        return host;
+    }
+
+    public ArrayList<ThreadMainServer> getThreadsInLobby() {
+        return threadsInLobby;
+    }
+    
     public int getTurno(){
         return turno%threadsInLobby.size();
     }
@@ -37,8 +46,9 @@ public class Partida implements Serializable {
         return mesa;
     }
     
+    //-------------------------------GET & SET----------------------------------
     
-    public void generarFichas(boolean flag){
+    private void generarFichas(boolean flag){
         if (flag) {
              Ficha com = new Ficha(0, 0, true);
              bote.add(com);
@@ -52,6 +62,7 @@ public class Partida implements Serializable {
             }
         }
     }
+    
     public void imprimirFichas(){
         for (int i = 0; i < bote.size(); i++) 
             System.out.println(bote.get(i));
@@ -65,15 +76,6 @@ public class Partida implements Serializable {
         }
         return mano;
     }
-
-    public String getHost() {
-        return host;
-    }
-
-    public ArrayList<ThreadMainServer> getThreadsInLobby() {
-        return threadsInLobby;
-    }
-    
     
     public Ficha tomarFichaBote(){
         if(bote.size() > 0 ){

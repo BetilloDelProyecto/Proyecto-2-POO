@@ -3,8 +3,8 @@ package MainServer;
 import java.io.*;
 
 public class ThreadAceptarClientes extends Thread{
-    MainServidor servidor;
-    boolean isRunning;
+    private MainServidor servidor;
+    private boolean isRunning;
 
     public ThreadAceptarClientes(MainServidor servidor) {
         this.servidor = servidor;
@@ -15,14 +15,14 @@ public class ThreadAceptarClientes extends Thread{
         while(isRunning){
             try {
                 try {
-                    servidor.jugadores.add( servidor.servidorMain.accept());
-                    servidor.ventana.mostrar("Cliente se ha conectado");
-                    servidor.threadsMainServer.add(new ThreadMainServer(servidor.jugadores.get(servidor.jugadores.size()-1), servidor));
-                    servidor.threadsMainServer.get(servidor.threadsMainServer.size()-1).start();
+                    servidor.getJugadores().add( servidor.getServidorMain().accept());
+                    servidor.getVentana().mostrar("Cliente se ha conectado");
+                    servidor.getThreadsMainServer().add(new ThreadMainServer(servidor.getJugadores().get(servidor.getJugadores().size()-1), servidor));
+                    servidor.getThreadsMainServer().get(servidor.getThreadsMainServer().size()-1).start();
                 } catch (IOException ex) {
                     
                 }
-                servidor.ventana.mostrar("Estoy esperando clientes");
+                servidor.getVentana().mostrar("Estoy esperando clientes");
                 sleep(1000);
             } catch (InterruptedException ex) {
                 

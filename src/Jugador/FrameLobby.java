@@ -3,13 +3,12 @@ package Jugador;
 import Partida.PartidaGUI;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 import javax.swing.*;
 
 public class FrameLobby extends javax.swing.JFrame implements Serializable{
-    Jugador jugador;
+    private Jugador jugador;
     
     //--------------------------------------CONSTRUCTOR
     public FrameLobby() {
@@ -18,8 +17,8 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
             this.setLayout(null);
             jugador = new Jugador(this);
             jugador.conexion(1025);
-            jugador.salida.writeInt(1);
-            jugador.salida.writeUTF("");
+            jugador.getSalida().writeInt(1);
+            jugador.getSalida().writeUTF("");
             
             lstServidores.addMouseListener(new MouseAdapter() {
             @Override
@@ -41,6 +40,18 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
         }
     }
     
+    //---------------------------------GET & SET--------------------------------
+
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    public void setJugador(Jugador jugador) {
+        this.jugador = jugador;
+    }
+    //---------------------------------GET & SET--------------------------------
+    
+    //---------------------------------METODOS----------------------------------
     public void refreshDefensesListBox(ArrayList<String> partidas){
         limpiarDefensasListBox();
         DefaultListModel<String> modelo = (DefaultListModel<String>) lstServidores.getModel();
@@ -66,7 +77,6 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
         btnCrearLobby = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstServidores = new javax.swing.JList<>();
-        btnScores = new javax.swing.JButton();
         btnUnirseLobby = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -101,8 +111,6 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
 
         jScrollPane1.setViewportView(lstServidores);
 
-        btnScores.setText("Scores");
-
         btnUnirseLobby.setText("Unirse");
         btnUnirseLobby.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -118,33 +126,31 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(17, 17, 17)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnScores, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(lblNickName, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGap(32, 32, 32)
-                                            .addComponent(lblBuscarLobby))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(txfNickName))))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(lblTamano, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(cbxTamanho, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGap(6, 6, 6)
-                                            .addComponent(btnCrearLobby, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblNickName, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(32, 32, 32)
+                                        .addComponent(lblBuscarLobby))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txfNickName))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblTamano, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cbxTamanho, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(btnCrearLobby, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(103, 103, 103)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnUnirseLobby)
                             .addComponent(lblCrearLobby))))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,29 +173,27 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
                     .addComponent(lblTamano))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnCrearLobby)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnScores)
-                .addGap(15, 15, 15))
+                .addGap(53, 53, 53))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void txfNickNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfNickNameActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_txfNickNameActionPerformed
     
     private void btnCrearLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearLobbyActionPerformed
         try {
             this.setVisible(false);
             jugador.setNomCliente(txfNickName.getText());
-            jugador.salida.writeInt(1);
-            jugador.salida.writeUTF(txfNickName.getText());
+            jugador.getSalida().writeInt(1);
+            jugador.getSalida().writeUTF(txfNickName.getText());
             jugador.setVentanaPartida(new PartidaGUI());
             jugador.getVentanaPartida().setVisible(true);
             jugador.getVentanaPartida().setJugador(jugador);
             jugador.getVentanaPartida().getLblEnemigo1().setText(jugador.getNomCliente());
-            jugador.salida.writeUTF(txfNickName.getText());
+            jugador.getSalida().writeUTF(txfNickName.getText());
             jugador.getVentanaPartida().getBtnSalirPartida().setText("Cerrar Lobby");
             jugador.setHostPartida(jugador.getNomCliente());
             
@@ -200,23 +204,21 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
     }//GEN-LAST:event_btnCrearLobbyActionPerformed
 
     private void cbxTamanhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTamanhoActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_cbxTamanhoActionPerformed
 
     private void btnUnirseLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnirseLobbyActionPerformed
         if(lstServidores.getSelectedValue()!=null){
             try {
                 this.setVisible(false);
-                jugador.setNomCliente(txfNickName.getText());
-                jugador.salida.writeInt(2);
-                jugador.salida.writeUTF(txfNickName.getText());
-                jugador.salida.writeUTF(lstServidores.getSelectedValue());
                 jugador.setVentanaPartida(new PartidaGUI());
                 jugador.getVentanaPartida().setVisible(true);
                 jugador.getVentanaPartida().getBtnIniciarPartida().setVisible(false);
                 jugador.getVentanaPartida().setJugador(jugador);
-                
-                
+                jugador.setNomCliente(txfNickName.getText());
+                jugador.getSalida().writeInt(2);
+                jugador.getSalida().writeUTF(txfNickName.getText());
+                jugador.getSalida().writeUTF(lstServidores.getSelectedValue());
             } catch (IOException ex) {
                 System.out.println("No se pudo unir a la lobby");
             }
@@ -262,7 +264,6 @@ public class FrameLobby extends javax.swing.JFrame implements Serializable{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCrearLobby;
-    private javax.swing.JButton btnScores;
     private javax.swing.JButton btnUnirseLobby;
     private javax.swing.JComboBox<String> cbxTamanho;
     private javax.swing.JScrollPane jScrollPane1;
